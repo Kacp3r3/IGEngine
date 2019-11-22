@@ -25,8 +25,6 @@ public:
 
 
 	void initRenderer();
-	void renderClear();
-	void renderTest();
 	//================================================================
 	//= Getters
 	//================================================================
@@ -38,6 +36,7 @@ public:
 public:
 	Keyboard kbd;
 	Mouse mouse;
+	std::unique_ptr<Renderer> m_pGfx;
 
 private:
 	struct GLFWwindowDeleter
@@ -47,7 +46,6 @@ private:
 		}
 	};
 	std::unique_ptr<GLFWwindow,GLFWwindowDeleter> m_pWnd;
-	std::unique_ptr<Renderer> m_pGfx;
 	int m_nHeight;
 	int m_nWidth;
 };

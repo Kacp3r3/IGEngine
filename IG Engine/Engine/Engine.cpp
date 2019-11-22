@@ -117,8 +117,8 @@ void Engine::processInput()
 
 void Engine::composeFrame()
 {
-	m_pWnd->renderClear();
-	m_pWnd->renderTest();
+	m_pWnd->m_pGfx->renderClearFrame(0.2f,0.5f,0.7f);
+	m_pWnd->m_pGfx->renderTestFrame();
 }
 
 void Engine::updateModels(float dt)

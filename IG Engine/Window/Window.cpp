@@ -23,17 +23,6 @@ void Window::initRenderer()
 	if(m_pGfx == nullptr) throw IGEXCEPTION_WND("Renderer creation failed");
 }
 
-void Window::renderClear()
-{
-	float r = 0.2f, g = 0.3f, b = 0.3f;
-	m_pGfx->renderClearFrame(r,g,b);
-}
-
-void Window::renderTest()
-{
-	m_pGfx->renderTestFrame();
-}
-
 GLFWwindow* Window::getWnd()
 {
 	return m_pWnd.get();
