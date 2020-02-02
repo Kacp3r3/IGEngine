@@ -1,8 +1,13 @@
 #pragma once
 #include <iostream>
+#include "..\ImGui\imgui.h"
+#include "..\ImGui\imgui_impl_glfw.h"
+#include "..\ImGui\imgui_impl_opengl3.h"
+#include "..\ImguiManager.h"
 #include "..\Window\Window.h"
 #include "..\Utility\Monitor.h"
 #include "..\Utility\Timer.h"
+
 class Engine
 {
 public:
@@ -53,6 +58,7 @@ private:
 
 private:
 	Timer m_Timer;
+	ImguiManager imgui;
 	std::unique_ptr<Window> m_pWnd;
 	std::string m_sWindowName;
 };

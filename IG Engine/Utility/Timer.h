@@ -54,8 +54,8 @@ private:
 	float m_fDelta;
 	float m_fMaxFPS;
 	float m_fSingleFrame;
-	std::chrono::system_clock::time_point m_current;
-	std::chrono::system_clock::time_point m_last;
+	std::chrono::steady_clock::time_point m_current;
+	std::chrono::steady_clock::time_point m_last;
 	std::map<std::string, std::pair<float, bool>> m_mapTimeCounter;
 };
 #endif

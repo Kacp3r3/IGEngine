@@ -3,7 +3,7 @@
 
 
 
-Timer::Timer() :m_fMaxFPS(75), m_current(std::chrono::system_clock::now()), m_last(std::chrono::system_clock::now()), m_fSingleFrame(1/m_fMaxFPS), m_fDelta(0.1f)
+Timer::Timer() :m_fMaxFPS(144), m_current(std::chrono::steady_clock::now()), m_last(std::chrono::steady_clock::now()), m_fSingleFrame(1/m_fMaxFPS), m_fDelta(0.1f)
 {
 }
 
@@ -55,9 +55,8 @@ void Timer::Mark()
 {
 	if (m_fDelta >= 1.f / m_fMaxFPS) m_fDelta = 0.f;
 	m_last = m_current;
-	m_current = std::chrono::system_clock::now();
+	m_current = std::chrono::steady_clock::now();
 	m_fDelta+= std::chrono::duration<float>(m_current - m_last).count();
-
 }
 
 void Timer::Reset()

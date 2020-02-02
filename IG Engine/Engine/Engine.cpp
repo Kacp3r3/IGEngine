@@ -4,6 +4,7 @@ Engine::Engine()
 	:
 	m_sWindowName("Kacp3r3 Playground")
 	,m_Timer()
+	,imgui()
 {
 	int w = 800;
 	int h = 600;
@@ -32,6 +33,7 @@ Engine::Engine()
 	glfwSetWindowPos(m_pWnd->getWnd(), m_pMonitor->m_veciCenter._x, m_pMonitor->m_veciCenter._y);
 	glfwSetWindowUserPointer(m_pWnd->getWnd(), m_pWnd.get());
 
+
 	//================================================================
 	//= Glad Initialization
 	//================================================================
@@ -39,6 +41,13 @@ Engine::Engine()
 		throw std::exception("Failed to load glad");
 	
 	//std::cout << glGetString(GL_VERSION) << std::endl;
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui::StyleColorsDark();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	const char* glsl_version = "#version 330";
+	ImGui_ImplGlfw_InitForOpenGL(m_pWnd->getWnd(), true);
+	ImGui_ImplOpenGL3_Init(glsl_version);
 
 	//================================================================
 	//= Callbacks
@@ -65,6 +74,7 @@ Engine::Engine()
 
 int Engine::Go()
 {
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	while (!glfwWindowShouldClose(m_pWnd->getWnd()))
 	{
 		//Providing delta Time
@@ -73,11 +83,34 @@ int Engine::Go()
 			m_Timer.Mark();
 
 		//Updating Label name
-		std::string a = m_sWindowName + " FPS: " + std::to_string((int)round(1 / m_Timer.getDelta()));
-		glfwSetWindowTitle(m_pWnd->getWnd(), a.c_str());
+		//std::string a = m_sWindowName + " FPS: " + std::to_string((int)round(1 / m_Timer.getDelta()));
+		//glfwSetWindowTitle(m_pWnd->getWnd(), a.c_str());
 
 
 
+		//================================================================
+		//= ImGui Stuff
+		//================================================================
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+		{
+			ImGui::Begin("IGEngine");                          // Create a window called "Hello, world!" and append into it.
+			ImGui::Text("Mouse pos x: %d y: %d",(int)m_pWnd->mouse.getPos()._x, (int)m_pWnd->mouse.getPos()._y);               // Display some text (you can use a format strings too)
+			ImGui::Text("Cursor inside window: %s",m_pWnd->mouse.insideWindow()?"True":"False");               // Display some text (you can use a format strings too)
+			//ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+			//ImGui::Checkbox("Another Window", &show_another_window);
+			//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+			//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+				//counter++;
+			//ImGui::SameLine();
+			//ImGui::Text("counter = %d", counter);
+
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::End();
+		}
 		//================================================================
 		//= GAME LOOP
 		//================================================================
@@ -91,6 +124,9 @@ int Engine::Go()
 		//Render scene
 		composeFrame();
 
+		//Imgui stuff
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(m_pWnd->getWnd());
@@ -98,6 +134,8 @@ int Engine::Go()
 		/* Poll for and process events */
 		m_pWnd->mouse.resetScroll();
 		glfwPollEvents();
+
+		
 	}
 
 	glfwTerminate();

@@ -67,7 +67,7 @@ void Mouse::update(int button, int action, int mods)
 void Mouse::updatePos(double xpos, double ypos)
 {
 #ifndef NDEBUG 
-	printf("Ruch myszka x: %d y: %d \n", (int)xpos, (int)ypos);
+	//printf("Ruch myszka x: %d y: %d \n", (int)xpos, (int)ypos);
 #endif
 	m_vecfLastMouse = m_vecfCurMouse;
 	m_vecfCurMouse = { float(xpos), float(ypos) };
@@ -76,7 +76,7 @@ void Mouse::updatePos(double xpos, double ypos)
 void Mouse::updateScroll(double offsetx, double offsety)
 {
 #ifndef NDEBUG 
-	printf("Scroll offset %d \n", (int)offsety);
+	//printf("Scroll offset %d \n", (int)offsety);
 #endif
 	m_fScroll = offsety;
 }
@@ -84,7 +84,7 @@ void Mouse::updateScroll(double offsetx, double offsety)
 void Mouse::updteEnter(int entered)
 {
 #ifndef NDEBUG 
-	printf("Cursor entered %s \n", entered == 1? " Yes": " No");
+	//printf("Cursor %s \n", entered == 1? "Entered": "Left");
 #endif
 	m_bInScreen = (bool)entered;
 }
@@ -92,6 +92,11 @@ void Mouse::updteEnter(int entered)
 Vec2f Mouse::getPos()
 {
 	return m_vecfCurMouse;
+}
+
+bool Mouse::insideWindow()
+{
+	return m_bInScreen;
 }
 
 void Mouse::resetScroll()

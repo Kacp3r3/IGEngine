@@ -62,7 +62,7 @@ public:
 	void updteEnter(int entered);
 
 	Vec2f getPos();
-
+	bool insideWindow();
 	void resetScroll();
 
 private:
