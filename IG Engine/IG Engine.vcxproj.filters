@@ -166,8 +166,19 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Graphics\Shaders\fs.fs" />
-    <None Include="Graphics\Shaders\fs2.fs" />
     <None Include="Graphics\Shaders\vs.vs" />
+    <None Include="Resources\Cube.mesh" />
+    <None Include="Resources\Plane.mesh" />
+    <None Include="Graphics\Shaders\sky.vs" />
+    <None Include="Graphics\Shaders\sky.fs" />
+    <None Include="Graphics\Shaders\fs.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="cursor.png">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
+    <Image Include="zl.jpg">
+      <Filter>Pliki zasobów</Filter>
+    </Image>
   </ItemGroup>
 </Project>

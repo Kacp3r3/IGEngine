@@ -9,6 +9,28 @@ void AssetManager::loadTextures()
 	//load("bk.jpg", "Greta", false);
 	//load("forloo.jpg", "Loop", true);
 	load("cursor.png", "Cursor", true);
+
+	std::vector<std::string> files =
+	{
+		"Resources/Skybox/right.jpg",
+		"Resources/Skybox/left.jpg",
+		"Resources/Skybox/top.jpg",
+		"Resources/Skybox/bottom.jpg",
+		"Resources/Skybox/front.jpg",
+		"Resources/Skybox/back.jpg"
+	};
+
+	std::vector<std::string> files2 =
+	{
+		"Resources/Skybox/DOOM16right.png",
+		"Resources/Skybox/DOOM16left.png",
+		"Resources/Skybox/DOOM16top.png",
+		"Resources/Skybox/DOOM16bottom.png",
+		"Resources/Skybox/DOOM16front.png",
+		"Resources/Skybox/DOOM16back.png"
+	};
+	m_mapTextures["SkyBox"] = new Texture(files,false);
+	m_mapTextures["SkyBoxDoom"] = new Texture(files2,true);
 }
 
 void AssetManager::loadMeshes()
@@ -17,6 +39,9 @@ void AssetManager::loadMeshes()
 
 	load("Resources/Cube.mesh", "Cube");
 	load("Resources/Plane.mesh", "Plane");
+	load("Resources/SkyBox.mesh", "SkyBox");
+
+	
 }
 
 Texture* AssetManager::getTexture(std::string name)

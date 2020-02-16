@@ -178,9 +178,16 @@
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Graphics\Shaders\sky.fs" />
     <None Include="Graphics\Shaders\fs.fs" />
-    <None Include="Graphics\Shaders\fs2.fs" />
+    <None Include="Graphics\Shaders\sky.vs" />
     <None Include="Graphics\Shaders\vs.vs" />
+    <None Include="Resources\Cube.mesh" />
+    <None Include="Resources\Plane.mesh" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="cursor.png" />
+    <Image Include="zl.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

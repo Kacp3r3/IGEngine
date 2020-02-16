@@ -16,6 +16,7 @@ public:
 	void loadMeshes();
 	Texture* getTexture(std::string name);
 	Mesh* getMesh(std::string name);
+
 private:
 	AssetManager()= default;
 	std::map<std::string, Texture*> m_mapTextures;

@@ -74,10 +74,14 @@ Engine::Engine()
 	glFrontFace(GL_CW);
 	//GL_CULL_FACE(GL_BACK);
 
-	m_Shader = new Shader("Graphics/Shaders/vs.vs", "Graphics/Shaders/fs2.fs");
+	m_Shader = new Shader("Graphics/Shaders/vs.vs", "Graphics/Shaders/fs.fs");
 	m_Shader->use();
 	m_Shader->setInt("texture1", 0);
-	m_matProj = glm::perspective(glm::radians(75.f), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.f);
+
+	m_SkyBoxShader = new Shader("Graphics/Shaders/sky.vs", "Graphics/Shaders/sky.fs");
+	m_SkyBoxShader->use();
+	m_SkyBoxShader->setInt("skybox", 0);
+	m_matProj = glm::perspective(glm::radians(75.f), (float)SCR_WIDTH / SCR_HEIGHT, camNear, camFar);
 
 	AssetManager::get();
 	AssetManager::get().loadTextures();
@@ -87,6 +91,9 @@ Engine::Engine()
 	m_CameraHUD = new CameraHUD(AssetManager::get().getTexture("Cursor"), AssetManager::get().getMesh("Plane"));
 	cube = new Model();
 	cube->addData(AssetManager::get().getMesh("Cube"));
+	SkyBox = new Model();
+	SkyBox->addData(AssetManager::get().getMesh("SkyBox"));
+	SkyBox->setTexture(AssetManager::get().getTexture("SkyBox"));
 }
 
 Engine::~Engine()
@@ -217,7 +224,7 @@ void Engine::processInput()
 				else if (fov > 75.0f)
 					m_Camera.setFov(75.0f);
 
-				m_matProj = glm::perspective(glm::radians(m_Camera.getFov()), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.f);
+				m_matProj = glm::perspective(glm::radians(m_Camera.getFov()), (float)SCR_WIDTH / SCR_HEIGHT, camNear, camFar);
 				break;
 			}
 			}
@@ -242,7 +249,7 @@ void Engine::processInput()
 		if (m_pWnd->kbd.getKey(GLFW_KEY_SPACE) == PRESSED)
 		{
 			m_Camera.reset();
-			m_matProj = glm::perspective(glm::radians(m_Camera.getFov()), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.f);
+			m_matProj = glm::perspective(glm::radians(m_Camera.getFov()), (float)SCR_WIDTH / SCR_HEIGHT, camNear, camFar);
 		}
 	}
 	if (m_pWnd->kbd.getKey(GLFW_KEY_1) == PRESSED)
@@ -253,6 +260,10 @@ void Engine::processInput()
 		cube->setTexture(AssetManager::get().getTexture("Zuza"));
 	if (m_pWnd->kbd.getKey(GLFW_KEY_4) == PRESSED)
 		cube->setTexture(AssetManager::get().getTexture("JanSzescian"));
+	if (m_pWnd->kbd.getKey(GLFW_KEY_5) == PRESSED)
+		SkyBox->setTexture(AssetManager::get().getTexture("SkyBox"));
+	if (m_pWnd->kbd.getKey(GLFW_KEY_6) == PRESSED)
+		SkyBox->setTexture(AssetManager::get().getTexture("SkyBoxDoom"));
 	if (m_pWnd->kbd.getKey(GLFW_KEY_ESCAPE) == PRESSED)
 		glfwSetWindowShouldClose(m_pWnd->getWnd(),GLFW_TRUE);
 
@@ -266,6 +277,7 @@ void Engine::composeFrame()
 	glm::mat4 projview = m_matProj * m_Camera.getView();
 	//Draw Cursor
 	m_CameraHUD->drawHUD(*m_Shader, *m_pWnd->m_pGfx);
+	
 	//Draw we
 	//Dó³
 	int x = 50; int z = 50;
@@ -275,14 +287,6 @@ void Engine::composeFrame()
 		{
 			glm::mat4 model = projview;
 			model = glm::translate(model, glm::vec3(((float)i - x / 2.f) - .5f, -.5f, ((float)j - z / 2.f) - .5f));
-			//float angle = 20.0f * 0;
-			//model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-			//model = glm::rotate(model, glm::radians(x * 180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-			//model = glm::rotate(model, glm::radians(y * 180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-			//model = glm::rotate(model, glm::radians(z * 180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-			//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-			//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-			//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 			model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
 			m_Shader->setMat4("model", model);
 			m_pWnd->m_pGfx->drawModel(cube);
@@ -303,6 +307,19 @@ void Engine::composeFrame()
 			m_pWnd->m_pGfx->drawModel(cube);
 		}
 	}
+
+
+	//SKYBOX STUFF XD
+	glm::mat4 tmp = projview;
+	tmp = glm::scale(tmp, glm::vec3(150.f, 150.f, 150.f));
+	glDepthMask(GL_FALSE);
+	m_SkyBoxShader->use();
+	m_SkyBoxShader->setMat4("model", tmp);
+	// ... set view and projection matrix
+	SkyBox->bindVAO();
+	glBindTexture(GL_TEXTURE_CUBE_MAP, SkyBox->getTexture());
+	glDrawElements(GL_TRIANGLES, SkyBox->getIndicesCount(), GL_UNSIGNED_INT, nullptr);
+	glDepthMask(GL_TRUE);
 }
 
 void Engine::updateModels(float dt)
@@ -347,3 +364,12 @@ const char* Engine::Exception::getType() const noexcept
 {
 	return "IGEngine Exception";
 }
+
+//float angle = 20.0f * 0;
+//model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+//model = glm::rotate(model, glm::radians(x * 180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+//model = glm::rotate(model, glm::radians(y * 180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+//model = glm::rotate(model, glm::radians(z * 180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.0f, 0.0f, 1.0f));

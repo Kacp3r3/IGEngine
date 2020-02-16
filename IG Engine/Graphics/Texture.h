@@ -7,7 +7,8 @@
 #include <stb_image.h>
 #include <glad/glad.h>
 #include <string>
-
+#include <vector>
+#include "..\Utility\IGException.h"
 
 //================================================================
 //= my Libs
@@ -28,6 +29,7 @@ public:
 	Texture() = delete;
 	Texture(const std::string& Path, bool transparent);
 	Texture(const std::string& Path, bool transparent, GLuint nSprites);
+	Texture(const std::vector<std::string>& vec, bool png);
 	~Texture();
 
 

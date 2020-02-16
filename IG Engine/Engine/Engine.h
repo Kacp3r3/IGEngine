@@ -67,13 +67,17 @@ private:
 	std::unique_ptr<Window> m_pWnd;
 	std::string m_sWindowName;
 	Model* cube;
+	Model* SkyBox;
 	CameraHUD* m_CameraHUD;
 	Camera m_Camera;
 	Shader* m_Shader;
+	Shader* m_SkyBoxShader;
 	glm::mat4 m_matProj;
 	float sensitivity= 0.3f;
 	float vel = 5.f;
 	bool m_bInputEnabled;
+	float camNear = 0.1f;
+	float camFar = 400.f;
 };
 
 
