@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "..\\Entity.h"
 #include "..\ImGui\imgui.h"
 #include "..\ImGui\imgui_impl_glfw.h"
 #include "..\ImGui\imgui_impl_opengl3.h"
@@ -7,6 +8,9 @@
 #include "..\Window\Window.h"
 #include "..\Utility\Monitor.h"
 #include "..\Utility\Timer.h"
+#include "..\Model.h"
+#include "..\AssetManager.h"
+#include "..\CameraHUD.h"
 
 class Engine
 {
@@ -24,7 +28,7 @@ public:
 	//= Constructor Crew
 	//================================================================
 	Engine();
-	~Engine() = default;
+	~Engine();
 	Engine(const Engine&) = delete;
 	Engine(const Engine&&) = delete;
 	Engine& operator = (const Engine&) = delete;
@@ -39,6 +43,8 @@ public:
 
 
 
+	static constexpr int SCR_WIDTH = 1280;
+	static constexpr int SCR_HEIGHT = 720;
 private:
 	void processInput();
 	void composeFrame();
@@ -55,12 +61,18 @@ private:
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 	
 
-
 private:
 	Timer m_Timer;
 	ImguiManager imgui;
 	std::unique_ptr<Window> m_pWnd;
 	std::string m_sWindowName;
+	Model m;
+	CameraHUD* m_CameraHUD;
+	Camera m_Camera;
+	Shader* m_Shader;
+	glm::mat4 m_matProj;
+	float sensitivity= 0.3f;
+	float vel = 5.f;
 };
 
 

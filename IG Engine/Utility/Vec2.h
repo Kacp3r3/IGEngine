@@ -48,6 +48,7 @@ public:
 	Vec2<T>& operator+=(Vec2<T> rhs);
 	Vec2<T> operator -(Vec2<T> rhs);
 	Vec2<T>& operator -=(Vec2<T> rhs);
+	bool operator != (Vec2<T> rhs);
 //================================================================
 //= Sk³adowe
 //================================================================
@@ -193,6 +194,12 @@ inline Vec2<T>& Vec2<T>::operator-=(Vec2<T> rhs)
 {
 	*this = *this - rhs;
 	return *this;
+}
+
+template<typename T>
+inline bool Vec2<T>::operator!=(Vec2<T> rhs)
+{
+	return _x != rhs._x || _y != rhs._y;
 }
 
 #endif

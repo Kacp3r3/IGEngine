@@ -5,6 +5,9 @@
 //= std Libs
 //================================================================
 #include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <GLFW/glfw3.h>
 
 
@@ -24,23 +27,31 @@ class Camera
 //= Ctor, Dtor
 //================================================================
 public:
-	Camera();
-	Camera(GLuint width, GLuint height);
+	Camera()=delete;
+	Camera(glm::vec3 pos);
 	~Camera();
 
 
 //================================================================
 //= Interface
 //================================================================
-	void initCamera(const Vec2f& pos, GLuint mapw, GLuint maph, GLuint wscreen, GLuint hscreen);
-	void updateCamera(const Vec2f & pos);
+	void updatePos(const glm::vec3 pos);
+	void setPos(const glm::vec3 pos);
+	void updateYaw(float x);
+	void updatePitch(float x);
+	void updateFov(float x);
+	void reset();
 	
 //================================================================
 //= Getters
 //================================================================
-	const Vec2f& getFov()const { return m_vecfFov; };
-	const Vec2f& getTranslate()const { return m_vecfTranslateVector; };
-
+	float getFov();
+	glm::vec3 getPos();
+	glm::mat4 getView();
+	glm::vec3 getFront();
+	glm::vec3 getUp();
+	float getYaw();
+	float getPitch();
 //================================================================
 //= Setters
 //================================================================
@@ -48,10 +59,12 @@ public:
 
 
 private:
-	Vec2f m_vecfTranslateVector;
-	Vec2f m_vecfFov;
-	Vec2f m_vecfScaleFactor;
-	GLuint m_nWidth;
-	GLuint m_nHeight;
+	glm::vec3 m_vecPos;
+	glm::vec3 m_vecFront;
+	glm::vec3 m_vecUp;
+
+	float m_fov;
+	float m_yaw;
+	float m_pitch;
 };
 #endif

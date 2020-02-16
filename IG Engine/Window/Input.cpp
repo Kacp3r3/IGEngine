@@ -14,6 +14,18 @@ void Input::resetAllKeys()
 		k.second = KeyState::RELEASED;
 }
 
+bool Input::empty()
+{
+	return m_queueEvents.size()<1;
+}
+
+Event Input::getEvent()
+{
+	Event e = m_queueEvents.front();
+	m_queueEvents.pop();
+	return e;
+}
+
 Keyboard::Keyboard() : Input()
 {
 	m_umapKeys[GLFW_KEY_W] = KeyState::RELEASED;
@@ -37,14 +49,15 @@ void Keyboard::update(int key, int scancode, int action, int mods)
 	else
 		printf("Puszczono przycisk %d\n", key);
 #endif
-	m_umapKeys[key] = action == GLFW_PRESS ? KeyState::PRESSED : action == GLFW_REPEAT ? KeyState::HELD : KeyState::RELEASED;
+	m_umapKeys[key] = action == GLFW_PRESS ? KeyState::PRESSED : action == GLFW_REPEAT ? KeyState::PRESSED : KeyState::RELEASED;
+	//m_umapKeys[key] = action == GLFW_PRESS ? KeyState::PRESSED : action == GLFW_REPEAT ? KeyState::HELD : KeyState::RELEASED;
 }
 
 Mouse::Mouse()
 	:
-	 Input()
-	,m_fScroll(0)
-	,m_bInScreen(true)
+	Input()
+	, m_fScroll(0)
+	, m_bInScreen(true)
 {
 	m_umapKeys[GLFW_MOUSE_BUTTON_LEFT] = KeyState::RELEASED;
 	m_umapKeys[GLFW_MOUSE_BUTTON_RIGHT] = KeyState::RELEASED;
@@ -69,16 +82,18 @@ void Mouse::updatePos(double xpos, double ypos)
 #ifndef NDEBUG 
 	//printf("Ruch myszka x: %d y: %d \n", (int)xpos, (int)ypos);
 #endif
-	m_vecfLastMouse = m_vecfCurMouse;
-	m_vecfCurMouse = { float(xpos), float(ypos) };
+	m_vecLastMouse = m_vecCurMouse;
+	m_vecCurMouse = { float(xpos), float(ypos) };
+	m_queueEvents.push(MOUSE_MOVE);
 }
 
 void Mouse::updateScroll(double offsetx, double offsety)
 {
 #ifndef NDEBUG 
-	//printf("Scroll offset %d \n", (int)offsety);
+	printf("Scroll offset %d \n", (int)offsety);
 #endif
 	m_fScroll = offsety;
+	m_queueEvents.push(MOUSE_SCROLL);
 }
 
 void Mouse::updteEnter(int entered)
@@ -89,9 +104,19 @@ void Mouse::updteEnter(int entered)
 	m_bInScreen = (bool)entered;
 }
 
+float Mouse::getScrollYOffset()
+{
+	return m_fScroll;
+}
+
 Vec2f Mouse::getPos()
 {
-	return m_vecfCurMouse;
+	return m_vecCurMouse;
+}
+
+Vec2f Mouse::getDiff()
+{
+	return m_vecCurMouse - m_vecLastMouse;
 }
 
 bool Mouse::insideWindow()

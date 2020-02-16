@@ -25,7 +25,7 @@ void TextGenerator::drawText(std::unique_ptr<Renderer>& gfx)
 				tmp._x = m_vecfStartPos._x;
 				xcount = 0;
 			}
-			gfx->drawLetter(tmp, letter, m_Texture->getID(), { m_fLetterSize,m_fLetterSize }, { 1,1,1,1 });
+			//gfx->drawLetter(tmp, letter, m_Texture->getID(), { m_fLetterSize,m_fLetterSize }, { 1,1,1,1 });
 			tmp._x += m_fLetterSize;
 		}
 		ycount++;

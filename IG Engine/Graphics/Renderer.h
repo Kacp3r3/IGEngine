@@ -22,7 +22,7 @@
 #include "Camera.h"
 #include "Texture.h"
 #include <memory>
-
+#include "..\Model.h"
 
 //================================================================
 //= Rendering everything
@@ -34,103 +34,43 @@ class Renderer
 //= Ctor, Dtor
 //================================================================
 public:
-	Renderer();
+	Renderer(int w, int h);
 	~Renderer() { };
-
 
 //================================================================
 //= Interface
 //================================================================
 	void renderClearFrame(float r, float g, float b);
 	void renderTestFrame();
-	void drawLetter(Vec2f pos, char letter, GLuint IdTexture, Vec2f scale, glm::vec4 color);
-	void draw(Vec2f pos, Texture* texture);
-	void refreshCameraSettings();
-	void setTextureCoords(GLuint x);
-	void setTextureCoords(Vec2i x);
+	void drawLine(GLuint& VAO, glm::vec3& translation);
+	void drawModel(Model* m);
+	void drawModel(Model* m, glm::mat4& rotation);
+	void drawLine(float x1, float y1, float x2, float y2);
 	//void drawSelf(double x, double y, GLuint IdTexture, double scaleX = 0.0, double scaleY = 0.0, glm::vec4 color = glm::vec4(1.0));
-
-
-
 
 //================================================================
 //= Members
 //================================================================
 private:
-
-	float fOffsetShader = 0.03125f;
-	//Drawing values
-	float m_fScaleFactorX;
-	float m_fScaleFactorY;
-	float m_fStartPosX;
-	float m_fStartPosY;
-	float m_fTranslateValueX;
-	float m_fTranslateValueY;
-
 	//Main renderShader
-	Shader m_SpriteSheetShader;
-
 
 	//Reference to camera
 	std::unique_ptr<Camera> m_Camera;
+	glm::mat4 proj;
+	glm::mat4 view;
 
+	GLuint VBO;
+	GLuint VAO;
+	GLuint EBO;
 
-	//Vbo vao ebo itp
-	unsigned int VBO, VAO, EBO;
-
-	//Dla mapy
-	float vertices3[20] = {
-		// positions          // textures coords
-		1.0f,  1.0f, 0.0f,   0.03125f, 1.0f,  // top right
-		1.0f, -1.0f, 0.0f,   0.03125f, 0.96875f,  // bottom right
-		-1.0f, -1.0f, 0.0f,   0.0f, 0.96875f,  // bottom left
-		-1.0f,  1.0f, 0.0f,   0.0f, 1.0f,  // top left 
-	};
-
-	float vertices[20] = {
-	 0.5f,  0.5f, 0.0f,  0.03125f, 1.0f,  //  // top right
-	 0.5f, -0.5f, 0.0f,  0.03125f, 0.96875f, // bottom right
-	-0.5f, -0.5f, 0.0f,   0.0f, 0.96875f, // bottom left
-	-0.5f,  0.5f, 0.0f,    0.0f, 1.0f,  // to // top left 
-	};
-
-	float vertices2[20] = {
-		// positions          // textures coords
-		1.0f,  1.0f, 0.0f,   0.0625f, 1.0f,  // top right
-		1.0f, -1.0f, 0.0f,   0.0625f, 0.9375f,  // bottom right
-		-1.0f, -1.0f, 0.0f,   0.0f, 0.9375f,  // bottom left
-		-1.0f,  1.0f, 0.0f,   0.0f, 1.0f,  // top left 
-	};
+	float model[6] = { 0.f, 0.f, 0.f,
+					   1.f, 1.f, 0.f };
 
 	//================================================================
 	//= Facey
 	//================================================================
-	unsigned int indices[6] = {  // note that we start from 0!
-	0, 1, 3,  // first Triangle
-	1, 2, 3   // second Triangle
+	unsigned int indices[2] = {  // note that we start from 0!
+	0, 1   // second Triangle
 	};
-
-
-	////Tymczasowo dla reszty ferajny
-	//float vertices2[20] = {
-	//	// positions          // textures coords
-	//	1.0f,  1.0f, 0.0f,   1.0f, 1.0f,  // top right
-	//	1.0f, -1.0f, 0.0f,   1.0f, 0.0f,  // bottom right
-	//	-1.0f, -1.0f, 0.0f,   0.0f, 0.0f,  // bottom left
-	//	-1.0f,  1.0f, 0.0f,   0.0f, 1.0f,  // top left 
-	//};
-
-
-
-
-	//float vertices[20] = {
-	//	// positions          // textures coords
-	//	0.5f,  0.5f, 0.0f,  
-	//	0.5f, -0.5f, 0.0f,  
-	//	-0.5f, -0.5f, 0.0f, 
-	//	-0.5f,  0.5f, 0.0f,  
-	//};
-
-	
 };
 #endif

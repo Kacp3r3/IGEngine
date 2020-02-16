@@ -19,7 +19,7 @@ Window::Window(int w, int h, std::string title)
 
 void Window::initRenderer()
 {
-	m_pGfx = std::make_unique<Renderer>();
+	m_pGfx = std::make_unique<Renderer>(m_nWidth,m_nHeight);
 	if(m_pGfx == nullptr) throw IGEXCEPTION_WND("Renderer creation failed");
 }
 

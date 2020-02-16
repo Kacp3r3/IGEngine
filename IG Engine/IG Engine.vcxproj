@@ -125,7 +125,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AssetManager.cpp" />
+    <ClCompile Include="CameraHUD.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
+    <ClCompile Include="Entity.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\Renderer.cpp" />
     <ClCompile Include="Graphics\Shaders\Shader.cpp" />
@@ -139,6 +142,7 @@
     <ClCompile Include="ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="Utility\IGException.cpp" />
     <ClCompile Include="Utility\Monitor.cpp" />
     <ClCompile Include="Utility\Timer.cpp" />
@@ -146,7 +150,10 @@
     <ClCompile Include="Window\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AssetManager.h" />
+    <ClInclude Include="CameraHUD.h" />
     <ClInclude Include="Engine\Engine.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="Graphics\Camera.h" />
     <ClInclude Include="Graphics\Renderer.h" />
     <ClInclude Include="Graphics\Shaders\Shader.h" />
@@ -161,6 +168,7 @@
     <ClInclude Include="ImGui\imstb_rectpack.h" />
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="Utility\Enums.h" />
     <ClInclude Include="Utility\IGException.h" />
     <ClInclude Include="Utility\Monitor.h" />
