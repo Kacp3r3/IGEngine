@@ -11,7 +11,20 @@ void AssetManager::loadTextures()
 	load("cursor.png", "Cursor", true);
 }
 
+void AssetManager::loadMeshes()
+{
+	auto load = [this](std::string path, std::string name) { m_mapMeshes[name] = new Mesh(path); };
+
+	load("Resources/Cube.mesh", "Cube");
+	load("Resources/Plane.mesh", "Plane");
+}
+
 Texture* AssetManager::getTexture(std::string name)
 {
 	return m_mapTextures[name];
+}
+
+Mesh* AssetManager::getMesh(std::string name)
+{
+	return m_mapMeshes[name];
 }

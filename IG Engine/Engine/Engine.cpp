@@ -6,6 +6,7 @@ Engine::Engine()
 	,m_Timer()
 	,imgui()
 	,m_Camera({0.f,1.75f,-3.f})
+	,m_bInputEnabled(true)
 {
 	
 	//================================================================
@@ -69,6 +70,9 @@ Engine::Engine()
 	glEnable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable(GL_CULL_FACE);
+	glFrontFace(GL_CW);
+	//GL_CULL_FACE(GL_BACK);
 
 	m_Shader = new Shader("Graphics/Shaders/vs.vs", "Graphics/Shaders/fs2.fs");
 	m_Shader->use();
@@ -77,11 +81,12 @@ Engine::Engine()
 
 	AssetManager::get();
 	AssetManager::get().loadTextures();
+	AssetManager::get().loadMeshes();
 	
 	m_pWnd->initRenderer();
-	
-	m.addData(mesh);
-	m_CameraHUD = new CameraHUD(AssetManager::get().getTexture("Cursor"));
+	m_CameraHUD = new CameraHUD(AssetManager::get().getTexture("Cursor"), AssetManager::get().getMesh("Plane"));
+	cube = new Model();
+	cube->addData(AssetManager::get().getMesh("Cube"));
 }
 
 Engine::~Engine()
@@ -91,7 +96,7 @@ Engine::~Engine()
 
 int Engine::Go()
 {
-	m.setTexture(AssetManager::get().getTexture("JanSzescian"));
+	cube->setTexture(AssetManager::get().getTexture("JanSzescian"));
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	float x = 0.f, y = 0.f, z = 0.f;
 	glfwSetCursorPos(m_pWnd->getWnd(), SCR_WIDTH / 2.f, SCR_HEIGHT / 2.f);
@@ -129,11 +134,15 @@ int Engine::Go()
 		ImGui::NewFrame();
 		{
 			ImGui::Begin("IGEngine");                          // Create a window called "Hello, world!" and append into it.
-			ImGui::Text("Mouse pos x: %d y: %d", (int)m_pWnd->mouse.getPos()._x, (int)m_pWnd->mouse.getPos()._y);               // Display some text (you can use a format strings too)
+			ImGui::Text("Cursor %s", m_bInputEnabled?"Disabled":"Enabled");               // Display some text (you can use a format strings too)
+			if (!m_bInputEnabled)
+			{
+				ImGui::Text("Cursor inside window: %s", m_pWnd->mouse.insideWindow() ? "True" : "False");               // Display some text (you can use a format strings too)
+				ImGui::Text("Mouse pos x: %d y: %d", (int)m_pWnd->mouse.getPos()._x, (int)m_pWnd->mouse.getPos()._y);               // Display some text (you can use a format strings too)
+			}
 			ImGui::Text("Camera pos x: %2.2f y: %2.2f z: %2.2f", m_Camera.getPos().x, m_Camera.getPos().y, m_Camera.getPos().z);               // Display some text (you can use a format strings too)
-			ImGui::Text("Camera ang yaw: %2.2f pitch: %2.2f", m_Camera.getYaw(), m_Camera.getPitch());               // Display some text (you can use a format strings too)
-			ImGui::Text("Cursor inside window: %s", m_pWnd->mouse.insideWindow() ? "True" : "False");               // Display some text (you can use a format strings too)
-			//ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+			ImGui::Text("Camera angles yaw: %2.2f pitch: %2.2f", m_Camera.getYaw(), m_Camera.getPitch());               // Display some text (you can use a format strings too)
+			ImGui::Checkbox("Camera fly", m_Camera.getFlight());      // Edit bools storing our window open/close state
 			//ImGui::Checkbox("Another Window", &show_another_window);
 			//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 			//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
@@ -171,72 +180,82 @@ int Engine::Go()
 
 void Engine::processInput()
 {
-	while (!m_pWnd->mouse.empty())
+
+	if (m_pWnd->kbd.getKey(321) == PRESSED)
 	{
-		switch (m_pWnd->mouse.getEvent())
-		{
-		case Event::MOUSE_MOVE:
-		{
-			Vec2f tmp = m_pWnd->mouse.getDiff();
-			m_Camera.updateYaw(tmp._x * sensitivity);
-			m_Camera.updatePitch(tmp._y * sensitivity);
-			break;
-		}
-
-		case Event::MOUSE_SCROLL:
-		{
-			float fov = m_Camera.getFov();
-			fov -= m_pWnd->mouse.getScrollYOffset();
-			if (fov > 1.0f && fov <= 75.0f)
-				m_Camera.setFov(fov);
-			else if (fov <= 1.0f)
-				m_Camera.setFov(1.0f);
-			else if (fov > 75.0f)
-				m_Camera.setFov(75.0f);
-
-			m_matProj = glm::perspective(glm::radians(m_Camera.getFov()), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.f);
-			break;
-		}
-		}
+		glfwSetInputMode(m_pWnd->getWnd(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		m_bInputEnabled = false;
+	}
+	else if (m_pWnd->kbd.getKey(322) == PRESSED)
+	{
+		glfwSetInputMode(m_pWnd->getWnd(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		m_bInputEnabled = true;
 	}
 
-	if (m_pWnd->kbd.getKey(GLFW_KEY_LEFT_SHIFT) == PRESSED)
-		vel = 10.f;
-	if (m_pWnd->kbd.getKey(GLFW_KEY_LEFT_SHIFT) == RELEASED)
-		vel = 5.f;
+	if (m_bInputEnabled)
+	{
+		while (!m_pWnd->mouse.empty())
+		{
+			switch (m_pWnd->mouse.getEvent())
+			{
+			case Event::MOUSE_MOVE:
+			{
+				Vec2f tmp = m_pWnd->mouse.getDiff();
+				m_Camera.updateYaw(tmp._x * sensitivity);
+				m_Camera.updatePitch(tmp._y * sensitivity);
+				break;
+			}
 
-	if (m_pWnd->kbd.getKey(GLFW_KEY_ESCAPE) == PRESSED)
-		glfwSetWindowShouldClose(m_pWnd->getWnd(),GLFW_TRUE);
+			case Event::MOUSE_SCROLL:
+			{
+				float fov = m_Camera.getFov();
+				fov -= m_pWnd->mouse.getScrollYOffset();
+				if (fov > 1.0f && fov <= 75.0f)
+					m_Camera.setFov(fov);
+				else if (fov <= 1.0f)
+					m_Camera.setFov(1.0f);
+				else if (fov > 75.0f)
+					m_Camera.setFov(75.0f);
 
+				m_matProj = glm::perspective(glm::radians(m_Camera.getFov()), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.f);
+				break;
+			}
+			}
+		}
+
+		if (m_pWnd->kbd.getKey(GLFW_KEY_LEFT_SHIFT) == PRESSED)
+			vel = 10.f;
+		if (m_pWnd->kbd.getKey(GLFW_KEY_LEFT_SHIFT) == RELEASED)
+			vel = 5.f;
+		if (m_pWnd->kbd.getKey(GLFW_KEY_W) == PRESSED)
+			m_Camera.updatePos(vel * m_Timer.getDelta() * m_Camera.getFront());
+
+		if (m_pWnd->kbd.getKey(GLFW_KEY_S) == PRESSED)
+			m_Camera.updatePos(-vel * m_Timer.getDelta() * m_Camera.getFront());
+
+		if (m_pWnd->kbd.getKey(GLFW_KEY_A) == PRESSED)
+			m_Camera.updatePos(glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * -vel * m_Timer.getDelta());
+
+		if (m_pWnd->kbd.getKey(GLFW_KEY_D) == PRESSED)
+			m_Camera.updatePos(glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * vel * m_Timer.getDelta());
+
+		if (m_pWnd->kbd.getKey(GLFW_KEY_SPACE) == PRESSED)
+		{
+			m_Camera.reset();
+			m_matProj = glm::perspective(glm::radians(m_Camera.getFov()), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.f);
+		}
+	}
 	if (m_pWnd->kbd.getKey(GLFW_KEY_1) == PRESSED)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	if (m_pWnd->kbd.getKey(GLFW_KEY_2) == PRESSED)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
 	if (m_pWnd->kbd.getKey(GLFW_KEY_3) == PRESSED)
-		m.setTexture(AssetManager::get().getTexture("Zuza"));
+		cube->setTexture(AssetManager::get().getTexture("Zuza"));
 	if (m_pWnd->kbd.getKey(GLFW_KEY_4) == PRESSED)
-		m.setTexture(AssetManager::get().getTexture("JanSzescian"));
+		cube->setTexture(AssetManager::get().getTexture("JanSzescian"));
+	if (m_pWnd->kbd.getKey(GLFW_KEY_ESCAPE) == PRESSED)
+		glfwSetWindowShouldClose(m_pWnd->getWnd(),GLFW_TRUE);
 
-
-
-	if (m_pWnd->kbd.getKey(GLFW_KEY_W) == PRESSED)
-		m_Camera.updatePos(vel * m_Timer.getDelta() * m_Camera.getFront());
-
-	if (m_pWnd->kbd.getKey(GLFW_KEY_S) == PRESSED)
-		m_Camera.updatePos(-vel * m_Timer.getDelta() * m_Camera.getFront());
-
-	if (m_pWnd->kbd.getKey(GLFW_KEY_A) == PRESSED)
-		m_Camera.updatePos(glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * -vel * m_Timer.getDelta());
-
-	if (m_pWnd->kbd.getKey(GLFW_KEY_D) == PRESSED)
-		m_Camera.updatePos(glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * vel * m_Timer.getDelta());
-
-	if (m_pWnd->kbd.getKey(GLFW_KEY_SPACE) == PRESSED)
-	{
-		m_Camera.reset();
-		m_matProj = glm::perspective(glm::radians(m_Camera.getFov()), (float)SCR_WIDTH / SCR_HEIGHT, 0.1f, 100.f);
-	}
 }
 
 void Engine::composeFrame()
@@ -255,7 +274,7 @@ void Engine::composeFrame()
 		for (int j = 0; j < z; ++j)
 		{
 			glm::mat4 model = projview;
-			model = glm::translate(model, glm::vec3(((float)i - x/2.f) -.5f,-.5f,((float)j-z/2.f)-.5f));
+			model = glm::translate(model, glm::vec3(((float)i - x / 2.f) - .5f, -.5f, ((float)j - z / 2.f) - .5f));
 			//float angle = 20.0f * 0;
 			//model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
 			//model = glm::rotate(model, glm::radians(x * 180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -266,7 +285,7 @@ void Engine::composeFrame()
 			//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 			model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
 			m_Shader->setMat4("model", model);
-			m_pWnd->m_pGfx->drawModel(&m);
+			m_pWnd->m_pGfx->drawModel(cube);
 		}
 	}
 
@@ -276,11 +295,12 @@ void Engine::composeFrame()
 	{
 		for (int j = 1; j < y+1; ++j)
 		{
+			if((i==25 || i==26 )&& (j==1 || j ==2)) continue;
 			glm::mat4 model = projview;
 			model = glm::translate(model, glm::vec3((float)i - x / 2.f -.5f, (float)j-.5f,2.f-.5f));
 			model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
 			m_Shader->setMat4("model", model);
-			m_pWnd->m_pGfx->drawModel(&m);
+			m_pWnd->m_pGfx->drawModel(cube);
 		}
 	}
 }

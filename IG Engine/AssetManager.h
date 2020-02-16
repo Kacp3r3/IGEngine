@@ -1,5 +1,6 @@
 #pragma once
 #include "Graphics/Texture.h"
+#include "Model.h"
 #include <string>
 #include <map>
 class AssetManager
@@ -12,9 +13,12 @@ public:
 	}
 
 	void loadTextures();
+	void loadMeshes();
 	Texture* getTexture(std::string name);
+	Mesh* getMesh(std::string name);
 private:
 	AssetManager()= default;
 	std::map<std::string, Texture*> m_mapTextures;
+	std::map<std::string, Mesh*> m_mapMeshes;
 };
 

@@ -7,8 +7,9 @@ Camera::Camera(glm::vec3 pos)
 	, m_yaw(0.f)
 	, m_pitch(0.f)
 	, m_fov(75.f)
-	, m_vecFront(0.f,0.f,-1.f)
-	, m_vecUp(0.f,1.f,0.f)
+	, m_vecFront(0.f, 0.f, -1.f)
+	, m_vecUp(0.f, 1.f, 0.f)
+	, m_bAllowFlight(false)
 {
 }
 
@@ -19,7 +20,8 @@ Camera::~Camera()
 void Camera::updatePos(const glm::vec3 pos)
 {
 	m_vecPos += pos;
-	m_vecPos.y = 1.75f;
+	if(!m_bAllowFlight)
+		m_vecPos.y = m_CamHeight;
 }
 
 void Camera::setPos(const glm::vec3 pos)
@@ -30,6 +32,10 @@ void Camera::setPos(const glm::vec3 pos)
 void Camera::updateYaw(float x)
 {
 	m_yaw += x;
+	if (m_yaw > 360.f)
+		m_yaw = 0.f;
+	else if (m_yaw < -360.f)
+		m_yaw = 0.f;
 }
 
 void Camera::updatePitch(float x)
@@ -53,7 +59,7 @@ void Camera::reset()
 	m_pitch = 0.f;
 	m_vecFront = { 0.f, 0.f, -1.f };
 	m_vecUp = { 0.f, 1.f, 0.f };
-	m_vecPos = { 0.f,1.75f,3.f };
+	m_vecPos = { 0.f,m_CamHeight,3.f };
 }
 
 float Camera::getFov()
@@ -96,6 +102,11 @@ float Camera::getYaw()
 float Camera::getPitch()
 {
 	return m_pitch;
+}
+
+bool* Camera::getFlight()
+{
+	return &m_bAllowFlight;
 }
 
 void Camera::setFov(float x)

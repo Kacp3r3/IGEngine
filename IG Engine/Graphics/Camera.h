@@ -52,6 +52,8 @@ public:
 	glm::vec3 getUp();
 	float getYaw();
 	float getPitch();
+
+	bool* getFlight();
 //================================================================
 //= Setters
 //================================================================
@@ -66,5 +68,8 @@ private:
 	float m_fov;
 	float m_yaw;
 	float m_pitch;
+
+	bool m_bAllowFlight;
+	float m_CamHeight = 1.5f;
 };
 #endif

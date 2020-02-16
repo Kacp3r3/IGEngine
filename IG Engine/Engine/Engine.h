@@ -66,13 +66,14 @@ private:
 	ImguiManager imgui;
 	std::unique_ptr<Window> m_pWnd;
 	std::string m_sWindowName;
-	Model m;
+	Model* cube;
 	CameraHUD* m_CameraHUD;
 	Camera m_Camera;
 	Shader* m_Shader;
 	glm::mat4 m_matProj;
 	float sensitivity= 0.3f;
 	float vel = 5.f;
+	bool m_bInputEnabled;
 };
 
 

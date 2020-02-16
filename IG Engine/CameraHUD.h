@@ -9,7 +9,7 @@
 class CameraHUD
 {
 public:
-	CameraHUD(Texture* cur);
+	CameraHUD(Texture* cur, Mesh* mesh);
 
 	void drawHUD(Shader& s,Renderer& gfx);
 private:
