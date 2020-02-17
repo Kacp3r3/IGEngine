@@ -1,16 +1,17 @@
 #pragma once
+
 #include <iostream>
-#include "..\\Entity.h"
-#include "..\ImGui\imgui.h"
-#include "..\ImGui\imgui_impl_glfw.h"
-#include "..\ImGui\imgui_impl_opengl3.h"
-#include "..\ImguiManager.h"
-#include "..\Window\Window.h"
-#include "..\Utility\Monitor.h"
-#include "..\Utility\Timer.h"
-#include "..\Model.h"
-#include "..\AssetManager.h"
-#include "..\CameraHUD.h"
+
+
+#include "AssetManager/AssetManager.h"
+#include "Window\Window.h"
+#include "Graphics/Camera/CameraHUD.h"
+#include "ImGui\imgui.h"
+#include "ImGui\imgui_impl_glfw.h"
+#include "ImGui\imgui_impl_opengl3.h"
+#include "ImGui/ImGuiManager/ImguiManager.h"
+#include "Utility\Monitor.h"
+#include "Utility\Timer.h"
 
 class Engine
 {

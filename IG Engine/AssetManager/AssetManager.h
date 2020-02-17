@@ -1,6 +1,6 @@
 #pragma once
-#include "Graphics/Texture.h"
-#include "Model.h"
+#include "Graphics/Resources/Texture.h"
+#include "Graphics/Resources/Model.h"
 #include <string>
 #include <map>
 class AssetManager

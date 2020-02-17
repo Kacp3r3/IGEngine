@@ -3,10 +3,9 @@
 #include <string>
 #include <memory>
 
-
 #include "Input.h"
-#include "..\Graphics\Renderer.h"
-#include "..\Utility\IGException.h"
+#include "Graphics/Renderer/Renderer.h"
+#include "Utility/IGException.h"
 
 class Window
 {

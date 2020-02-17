@@ -8,12 +8,12 @@
 #include <glad/glad.h>
 #include <string>
 #include <vector>
-#include "..\Utility\IGException.h"
+#include "Utility\IGException.h"
 
 //================================================================
 //= my Libs
 //================================================================
-#include "..//Utility/Vec2.h"
+#include "Utility/Vec2.h"
 
 
 //================================================================

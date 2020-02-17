@@ -2,8 +2,8 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
 #include <unordered_map>
-#include "..\Utility\Vec2.h"
-#include "..\Utility\Enums.h"
+#include "Utility\Vec2.h"
+#include "Utility\Enums.h"
 #include <queue>
 class Input
 {

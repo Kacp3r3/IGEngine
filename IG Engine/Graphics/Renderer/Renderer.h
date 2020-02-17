@@ -4,6 +4,7 @@
 //================================================================
 //= std Libs
 //================================================================
+#include <memory>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -15,14 +16,12 @@
 //= My Libs
 //================================================================
 //#include "../AssetManager/AssetManager.h"
-#include "../Utility/Enums.h"
-#include "Shaders/Shader.h"
-//#include "../Map/Map.h"
-#include "../Utility/Vec2.h"
-#include "Camera.h"
-#include "Texture.h"
-#include <memory>
-#include "..\Model.h"
+#include "Utility/Enums.h"
+#include "Utility/Vec2.h"
+#include "Graphics/Camera/Camera.h"
+#include "Graphics/Resources/Model.h"
+#include "Graphics/Resources/Texture.h"
+#include "Graphics/Shaders/Shader.h"
 
 //================================================================
 //= Rendering everything

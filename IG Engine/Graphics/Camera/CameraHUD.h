@@ -1,10 +1,10 @@
 #pragma once
-#include "Graphics/Texture.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "Graphics/Renderer.h"
-#include "Model.h"
+#include "Graphics/Resources/Texture.h"
+#include "Graphics/Resources/Model.h"
+#include "Graphics/Renderer/Renderer.h"
 #include "Graphics/Shaders/Shader.h"
 class CameraHUD
 {

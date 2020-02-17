@@ -2,8 +2,8 @@
 #include <vector>
 #include <fstream>
 #include <glad/glad.h>
-#include "Graphics/Texture.h"
 #include "Utility/IGException.h"
+#include "Graphics/Resources/Texture.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>

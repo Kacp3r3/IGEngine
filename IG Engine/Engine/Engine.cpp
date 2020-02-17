@@ -1,5 +1,4 @@
 #include "Engine.h"
-
 Engine::Engine()
 	:
 	m_sWindowName("Kacp3r3 Playground")
@@ -10,7 +9,7 @@ Engine::Engine()
 {
 	
 	//================================================================
-	//= Initialize GLFW and force to use 3.3 OpenGL
+	//= Initialize GLFW and force to use 4.4 OpenGL
 	//================================================================
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -24,8 +23,8 @@ Engine::Engine()
 	m_pWnd = std::make_unique<Window>(SCR_WIDTH, SCR_HEIGHT, m_sWindowName);
 
 	// Position of the Window
-	int count = 3;
-	int chosen = 1;
+	int count = 2;
+	int chosen = 2;
 	Monitor* m_pMonitor;
 	GLFWmonitor** tmp = glfwGetMonitors(&count);
 	if (chosen>count) throw IGEXCEPTION_ENG("Nie ma wybranego monitora");
@@ -91,6 +90,7 @@ Engine::Engine()
 	m_CameraHUD = new CameraHUD(AssetManager::get().getTexture("Cursor"), AssetManager::get().getMesh("Plane"));
 	cube = new Model();
 	cube->addData(AssetManager::get().getMesh("Cube"));
+	cube->setTexture(AssetManager::get().getTexture("JanSzescian"));
 	SkyBox = new Model();
 	SkyBox->addData(AssetManager::get().getMesh("SkyBox"));
 	SkyBox->setTexture(AssetManager::get().getTexture("SkyBox"));
@@ -103,8 +103,7 @@ Engine::~Engine()
 
 int Engine::Go()
 {
-	cube->setTexture(AssetManager::get().getTexture("JanSzescian"));
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	//ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 	float x = 0.f, y = 0.f, z = 0.f;
 	glfwSetCursorPos(m_pWnd->getWnd(), SCR_WIDTH / 2.f, SCR_HEIGHT / 2.f);
 	while (!glfwWindowShouldClose(m_pWnd->getWnd()))
@@ -315,7 +314,6 @@ void Engine::composeFrame()
 	glDepthMask(GL_FALSE);
 	m_SkyBoxShader->use();
 	m_SkyBoxShader->setMat4("model", tmp);
-	// ... set view and projection matrix
 	SkyBox->bindVAO();
 	glBindTexture(GL_TEXTURE_CUBE_MAP, SkyBox->getTexture());
 	glDrawElements(GL_TRIANGLES, SkyBox->getIndicesCount(), GL_UNSIGNED_INT, nullptr);
