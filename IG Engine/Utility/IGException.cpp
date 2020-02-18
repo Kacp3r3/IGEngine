@@ -1,5 +1,6 @@
 #include "IGException.h"
 #include <sstream>
+
 IGException::IGException(int line, const char* file, const char* what) noexcept
 	:
 	 _line(line)
@@ -38,4 +39,15 @@ std::string IGException::getOriginString() const noexcept
 		<< "[Line] " << _line << std::endl
 		<< "[What] " << _what << std::endl;
 	return oss.str();
+}
+
+
+IOException::IOException(int line, const char* file, const char* what) noexcept
+	:
+	IGException(line, file, what)
+{}
+
+const char* IOException::IOException::getType() const noexcept
+{
+	return "IO Exception";
 }

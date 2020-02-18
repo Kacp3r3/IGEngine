@@ -41,8 +41,6 @@ void AssetManager::loadMeshes()
 	load("Resources/Cube.mesh", "Cube");
 	load("Resources/Plane.mesh", "Plane");
 	load("Resources/SkyBox.mesh", "SkyBox");
-
-	
 }
 
 Texture* AssetManager::getTexture(std::string&& name)

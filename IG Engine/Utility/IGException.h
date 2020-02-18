@@ -19,3 +19,13 @@ protected:
 };
 
 #define IGEXCEPTION( hr ) IGException( __LINE__,__FILE__,hr )
+
+class IOException : public IGException
+{
+public:
+	IOException(int line, const char* file, const char* what) noexcept;
+private:
+	const char* getType()const noexcept override;
+};
+
+#define IGEXCEPTIONIO( hr ) IOException( __LINE__,__FILE__,hr )

@@ -6,6 +6,7 @@
 
 #include "AssetManager/AssetManager.h"
 #include "Graphics/Camera/CameraHUD.h"
+#include "Graphics/Camera/Camera.h"
 #include "ImGui/ImGuiManager/ImguiManager.h"
 #include "Utility\Monitor.h"
 #include "Utility\Timer.h"

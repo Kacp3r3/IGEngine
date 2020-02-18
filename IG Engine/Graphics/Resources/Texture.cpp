@@ -8,9 +8,7 @@ Texture::~Texture()
 }
 
 
-Texture::Texture(const std::string & Path, bool transparent)
-	:
-	 m_nSprites(0)
+Texture::Texture(const std::string & path, bool transparent)
 {
 	glGenTextures(1, &m_nID);
 	glBindTexture(GL_TEXTURE_2D, m_nID);
@@ -23,7 +21,7 @@ Texture::Texture(const std::string & Path, bool transparent)
 	// load image, create texture and generate mipmaps
 	int width, height, nrChannels;
 	stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
-	unsigned char *data = stbi_load(Path.c_str(), &width, &height, &nrChannels, 0);
+	unsigned char *data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
 	if (data)
 	{
 		if (!transparent) glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -33,19 +31,11 @@ Texture::Texture(const std::string & Path, bool transparent)
 	}
 	else
 	{
-		throw std::runtime_error("Failed to load texture: " + Path);
+		throw IGEXCEPTIONIO(std::string("Failed to load texture " + path).c_str());
 	}
 	m_nWidth = (GLuint)width;
 	m_nHeight = (GLuint)height;
 	stbi_image_free(data);
-}
-
-Texture::Texture(const std::string& Path, bool transparent, GLuint nSprites)
-	:
-	 Texture(Path,transparent)
-	
-{
-	m_nSprites=nSprites;
 }
 
 Texture::Texture(const std::vector<std::string>& vec, bool png)
@@ -71,7 +61,7 @@ Texture::Texture(const std::vector<std::string>& vec, bool png)
 		else
 		{
 			stbi_image_free(data);
-			throw std::runtime_error("Failed to load texture: " + vec[i]);
+			throw IGEXCEPTIONIO(std::string("Failed to load texture " + vec[i]).c_str());
 		}
 	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -81,5 +71,7 @@ Texture::Texture(const std::vector<std::string>& vec, bool png)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	m_nID = textureID;
+	m_nWidth = width;
+	m_nHeight = height;
 	//return textureID;
 }

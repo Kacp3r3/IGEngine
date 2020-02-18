@@ -1,17 +1,15 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <glad/glad.h> // include glew to get all the required OpenGL headers
-#include <glm/glm.hpp>
 
+#include <glad/glad.h>
+#include <glm/glm.hpp>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 
-//================================================================
-//= TAK
-//================================================================
+
 #define ASSERT(x) if(!(x)) __debugbreak();
 #define GLLogCall(x) GLClearError(); x; ASSERT(GLCheckError(#x, __FILE__, __LINE__))
 

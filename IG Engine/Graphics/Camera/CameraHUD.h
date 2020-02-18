@@ -13,7 +13,7 @@ public:
 
 	void drawHUD(Shader& s,Renderer& gfx);
 private:
-	glm::mat4 ortho;
+	glm::mat4 m_matOrtho;
 	Model m_Croshair;
 };
 

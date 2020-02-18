@@ -386,6 +386,8 @@ void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height
 {
 	glViewport(0, 0, width, height);
 }
+
+
 Engine::Exception::Exception(int line, const char* file, const char* what) noexcept
 	:
 	IGException(line, file, what)
@@ -393,7 +395,7 @@ Engine::Exception::Exception(int line, const char* file, const char* what) noexc
 
 const char* Engine::Exception::getType() const noexcept
 {
-	return "IGEngine Exception";
+	return "IO Exception";
 }
 
 //float angle = 20.0f * 0;
