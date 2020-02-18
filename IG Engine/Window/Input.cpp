@@ -19,9 +19,9 @@ bool Input::empty()
 	return m_queueEvents.size()<1;
 }
 
-Event Input::getEvent()
+std::pair<Event,int> Input::getEvent()
 {
-	Event e = m_queueEvents.front();
+	std::pair<Event,int> e = m_queueEvents.front();
 	m_queueEvents.pop();
 	return e;
 }
@@ -49,7 +49,10 @@ void Keyboard::update(int key, int scancode, int action, int mods)
 	else
 		printf("Puszczono przycisk %d\n", key);
 #endif
-	m_umapKeys[key] = action == GLFW_PRESS ? KeyState::PRESSED : action == GLFW_REPEAT ? KeyState::PRESSED : KeyState::RELEASED;
+	//m_umapKeys[last] = KeyState::UNDEFINED;
+	//last = key;
+	m_queueEvents.push({ action == GLFW_PRESS ? Event::KBD_KEY_DOWN : action == GLFW_REPEAT ? Event::KBD_KEY_HELD : Event::KBD_KEY_UP,key });
+	m_umapKeys[key] = action == GLFW_PRESS || action == GLFW_REPEAT ? KeyState::PRESSED : KeyState::RELEASED;
 	//m_umapKeys[key] = action == GLFW_PRESS ? KeyState::PRESSED : action == GLFW_REPEAT ? KeyState::HELD : KeyState::RELEASED;
 }
 
@@ -62,6 +65,8 @@ Mouse::Mouse()
 	m_umapKeys[GLFW_MOUSE_BUTTON_LEFT] = KeyState::RELEASED;
 	m_umapKeys[GLFW_MOUSE_BUTTON_RIGHT] = KeyState::RELEASED;
 	m_umapKeys[GLFW_MOUSE_BUTTON_MIDDLE] = KeyState::RELEASED;
+	m_vecCurMouse = { 640, 360 };
+	m_vecLastMouse = { 640, 360 };
 }
 
 void Mouse::update(int button, int action, int mods)
@@ -74,6 +79,9 @@ void Mouse::update(int button, int action, int mods)
 	else 
 		printf("Puszczono przycisk myszy %d\n", button);
 	#endif
+	//m_umapKeys[last] = KeyState::UNDEFINED;
+	//last = button;
+	m_queueEvents.push({ button == GLFW_PRESS ? Event::MOUSE_KEY_DOWN : button == GLFW_REPEAT ? Event::MOUSE_KEY_HELD : Event::MOUSE_KEY_UP ,button});
 	m_umapKeys[button] = action == GLFW_PRESS ? KeyState::PRESSED : action==GLFW_REPEAT? KeyState::HELD : KeyState::RELEASED;
 }
 
@@ -84,7 +92,7 @@ void Mouse::updatePos(double xpos, double ypos)
 #endif
 	m_vecLastMouse = m_vecCurMouse;
 	m_vecCurMouse = { float(xpos), float(ypos) };
-	m_queueEvents.push(MOUSE_MOVE);
+	m_queueEvents.push({ Event::MOUSE_MOVE,0 });
 }
 
 void Mouse::updateScroll(double offsetx, double offsety)
@@ -92,8 +100,8 @@ void Mouse::updateScroll(double offsetx, double offsety)
 #ifndef NDEBUG 
 	printf("Scroll offset %d \n", (int)offsety);
 #endif
-	m_fScroll = offsety;
-	m_queueEvents.push(MOUSE_SCROLL);
+	m_fScroll = static_cast<float>(offsety);
+	m_queueEvents.push({ Event::MOUSE_SCROLL,0 });
 }
 
 void Mouse::updteEnter(int entered)
@@ -109,12 +117,12 @@ float Mouse::getScrollYOffset()
 	return m_fScroll;
 }
 
-Vec2f Mouse::getPos()
+glm::vec2 Mouse::getPos()
 {
 	return m_vecCurMouse;
 }
 
-Vec2f Mouse::getDiff()
+glm::vec2 Mouse::getDiff()
 {
 	return m_vecCurMouse - m_vecLastMouse;
 }

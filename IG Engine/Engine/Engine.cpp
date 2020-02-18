@@ -4,7 +4,7 @@ Engine::Engine()
 	m_sWindowName("Kacp3r3 Playground")
 	,m_Timer()
 	,imgui()
-	,m_Camera({0.f,1.75f,-3.f})
+	,m_Camera({0.f,1.50f,-3.f})
 	,m_bInputEnabled(true)
 {
 	
@@ -80,7 +80,7 @@ Engine::Engine()
 	m_SkyBoxShader = new Shader("Graphics/Shaders/sky.vs", "Graphics/Shaders/sky.fs");
 	m_SkyBoxShader->use();
 	m_SkyBoxShader->setInt("skybox", 0);
-	m_matProj = glm::perspective(glm::radians(75.f), (float)SCR_WIDTH / SCR_HEIGHT, camNear, camFar);
+	//m_matProj = glm::perspective(glm::radians(75.f), (float)SCR_WIDTH / SCR_HEIGHT, camNear, camFar);
 
 	AssetManager::get();
 	AssetManager::get().loadTextures();
@@ -140,15 +140,30 @@ int Engine::Go()
 		ImGui::NewFrame();
 		{
 			ImGui::Begin("IGEngine");                          // Create a window called "Hello, world!" and append into it.
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			//ImGui::SameLine();
 			ImGui::Text("Cursor %s", m_bInputEnabled?"Disabled":"Enabled");               // Display some text (you can use a format strings too)
 			if (!m_bInputEnabled)
 			{
 				ImGui::Text("Cursor inside window: %s", m_pWnd->mouse.insideWindow() ? "True" : "False");               // Display some text (you can use a format strings too)
-				ImGui::Text("Mouse pos x: %d y: %d", (int)m_pWnd->mouse.getPos()._x, (int)m_pWnd->mouse.getPos()._y);               // Display some text (you can use a format strings too)
+				ImGui::Text("Mouse pos x: %d y: %d", (int)m_pWnd->mouse.getPos().x, (int)m_pWnd->mouse.getPos().y);               // Display some text (you can use a format strings too)
+
+				ImGui::Begin("Camera properties");
+				ImGui::Text("Perspective");
+				if (ImGui::SliderFloat("Far", m_Camera.ptrFar(), 10.0f, 400.0f)) m_Camera.updateProjection();
+				if (ImGui::SliderFloat("Near", m_Camera.ptrNear(), 0.1f, 10.0f)) m_Camera.updateProjection();
+				if (ImGui::SliderFloat("Fov", m_Camera.ptrFov(), 1.0f, 150.0f)) m_Camera.updateProjection();
+				ImGui::Text("Properties");
+				ImGui::SliderFloat("Velocity", m_Camera.ptrVelocity(), 1.0f, 20.0f);
+				if (!m_Camera.getFly())
+					if (ImGui::SliderFloat("Height", m_Camera.ptrHeight(), 0.0f, 4.0f)) m_Camera.updatePos();
+				ImGui::SliderFloat("Sensitivity", m_Camera.ptrSensitivity(), 0.05f, 2.0f);
+				ImGui::End();
 			}
 			ImGui::Text("Camera pos x: %2.2f y: %2.2f z: %2.2f", m_Camera.getPos().x, m_Camera.getPos().y, m_Camera.getPos().z);               // Display some text (you can use a format strings too)
 			ImGui::Text("Camera angles yaw: %2.2f pitch: %2.2f", m_Camera.getYaw(), m_Camera.getPitch());               // Display some text (you can use a format strings too)
-			ImGui::Checkbox("Camera fly", m_Camera.getFlight());      // Edit bools storing our window open/close state
+			ImGui::Text("Camera speed: %2.2f/s", m_Camera.getSpeed());               // Display some text (you can use a format strings too)
+			if(ImGui::Checkbox("Camera fly", m_Camera.ptrFly())) m_Camera.updatePos();      // Edit bools storing our window open/close state
 			//ImGui::Checkbox("Another Window", &show_another_window);
 			//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
 			//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
@@ -158,15 +173,9 @@ int Engine::Go()
 			//ImGui::SameLine();
 			//ImGui::Text("counter = %d", counter);
 
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
 
-			//ImGui::Begin("Object properties");
-			//ImGui::Text("Position of line");
-			//ImGui::SliderFloat("x", &x, -1.0f, 1.0f); 
-			//ImGui::SliderFloat("y", &y, -1.0f, 1.0f); 
-			//ImGui::SliderFloat("z", &z, -1.0f, 1.0f); 
-			//ImGui::End();
+			
 		}
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -186,85 +195,109 @@ int Engine::Go()
 
 void Engine::processInput()
 {
-
-	if (m_pWnd->kbd.getKey(321) == PRESSED)
+	while (!m_pWnd->mouse.empty())
 	{
-		glfwSetInputMode(m_pWnd->getWnd(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-		m_bInputEnabled = false;
+		auto event = m_pWnd->mouse.getEvent();
+		switch (event.first)
+		{
+			case Event::MOUSE_MOVE:
+			{
+				if(m_bInputEnabled) m_Camera.processMouse(m_pWnd->mouse.getDiff(), true);
+				break;
+			}
+			case Event::MOUSE_SCROLL:
+			{
+				if (m_bInputEnabled) m_Camera.processScroll(m_pWnd->mouse.getScrollYOffset());
+				break;
+			}
+			case Event::MOUSE_KEY_DOWN:
+			{
+				
+			}
+			default:
+				break;
+		}
 	}
-	else if (m_pWnd->kbd.getKey(322) == PRESSED)
+
+	while (!m_pWnd->kbd.empty())
 	{
-		glfwSetInputMode(m_pWnd->getWnd(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		m_bInputEnabled = true;
+		auto event = m_pWnd->kbd.getEvent();
+		switch (event.first)
+		{
+			case Event::KBD_KEY_DOWN:
+			{
+				switch (event.second)
+				{
+					case GLFW_KEY_LEFT_SHIFT:
+							m_Camera.doubleSpeed();
+							break;
+					case GLFW_KEY_SPACE:
+							m_Camera.reset();
+							break;
+					case GLFW_KEY_1:
+							glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+							break;
+					case GLFW_KEY_2:
+							glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+							break;
+					case GLFW_KEY_3:
+							cube->setTexture(AssetManager::get().getTexture("Zuza"));
+							break;
+					case GLFW_KEY_4:
+							cube->setTexture(AssetManager::get().getTexture("JanSzescian"));
+							break;
+					case GLFW_KEY_5:
+							SkyBox->setTexture(AssetManager::get().getTexture("SkyBox"));
+							break;
+					case GLFW_KEY_6:
+							SkyBox->setTexture(AssetManager::get().getTexture("SkyBoxDoom"));
+							break;
+					case GLFW_KEY_ESCAPE:
+							glfwSetWindowShouldClose(m_pWnd->getWnd(), GLFW_TRUE);
+							break;
+					case 321:
+							glfwSetInputMode(m_pWnd->getWnd(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+							m_bInputEnabled = false;
+							break;
+					case 322:
+							glfwSetInputMode(m_pWnd->getWnd(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+							m_bInputEnabled = true;
+							break;
+					default:
+						break;
+					
+				}
+				break;
+			}
+
+			case Event::KBD_KEY_UP:
+			{
+				switch (event.second)
+				{
+					case GLFW_KEY_LEFT_SHIFT:
+							m_Camera.normalSpeed();
+							break;
+				}
+				break;
+			}
+		}
 	}
 
 	if (m_bInputEnabled)
 	{
-		while (!m_pWnd->mouse.empty())
-		{
-			switch (m_pWnd->mouse.getEvent())
-			{
-			case Event::MOUSE_MOVE:
-			{
-				Vec2f tmp = m_pWnd->mouse.getDiff();
-				m_Camera.updateYaw(tmp._x * sensitivity);
-				m_Camera.updatePitch(tmp._y * sensitivity);
-				break;
-			}
+		m_Camera.setSpeed(0.f);
+		if (m_pWnd->kbd.getKey(GLFW_KEY_W) == KeyState::PRESSED)
+			m_Camera.processKeyboard(Movement::FORWARD, m_Timer.getDelta());
 
-			case Event::MOUSE_SCROLL:
-			{
-				float fov = m_Camera.getFov();
-				fov -= m_pWnd->mouse.getScrollYOffset();
-				if (fov > 1.0f && fov <= 75.0f)
-					m_Camera.setFov(fov);
-				else if (fov <= 1.0f)
-					m_Camera.setFov(1.0f);
-				else if (fov > 75.0f)
-					m_Camera.setFov(75.0f);
+		if (m_pWnd->kbd.getKey(GLFW_KEY_S) == KeyState::PRESSED)
+			m_Camera.processKeyboard(Movement::BACKWARD, m_Timer.getDelta());
 
-				m_matProj = glm::perspective(glm::radians(m_Camera.getFov()), (float)SCR_WIDTH / SCR_HEIGHT, camNear, camFar);
-				break;
-			}
-			}
-		}
+		if (m_pWnd->kbd.getKey(GLFW_KEY_A) == KeyState::PRESSED)
+			m_Camera.processKeyboard(Movement::LEFT, m_Timer.getDelta());
 
-		if (m_pWnd->kbd.getKey(GLFW_KEY_LEFT_SHIFT) == PRESSED)
-			vel = 10.f;
-		if (m_pWnd->kbd.getKey(GLFW_KEY_LEFT_SHIFT) == RELEASED)
-			vel = 5.f;
-		if (m_pWnd->kbd.getKey(GLFW_KEY_W) == PRESSED)
-			m_Camera.updatePos(vel * m_Timer.getDelta() * m_Camera.getFront());
-
-		if (m_pWnd->kbd.getKey(GLFW_KEY_S) == PRESSED)
-			m_Camera.updatePos(-vel * m_Timer.getDelta() * m_Camera.getFront());
-
-		if (m_pWnd->kbd.getKey(GLFW_KEY_A) == PRESSED)
-			m_Camera.updatePos(glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * -vel * m_Timer.getDelta());
-
-		if (m_pWnd->kbd.getKey(GLFW_KEY_D) == PRESSED)
-			m_Camera.updatePos(glm::normalize(glm::cross(m_Camera.getFront(), m_Camera.getUp())) * vel * m_Timer.getDelta());
-
-		if (m_pWnd->kbd.getKey(GLFW_KEY_SPACE) == PRESSED)
-		{
-			m_Camera.reset();
-			m_matProj = glm::perspective(glm::radians(m_Camera.getFov()), (float)SCR_WIDTH / SCR_HEIGHT, camNear, camFar);
-		}
+		if (m_pWnd->kbd.getKey(GLFW_KEY_D) == KeyState::PRESSED)
+			m_Camera.processKeyboard(Movement::RIGHT, m_Timer.getDelta());
 	}
-	if (m_pWnd->kbd.getKey(GLFW_KEY_1) == PRESSED)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	if (m_pWnd->kbd.getKey(GLFW_KEY_2) == PRESSED)
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	if (m_pWnd->kbd.getKey(GLFW_KEY_3) == PRESSED)
-		cube->setTexture(AssetManager::get().getTexture("Zuza"));
-	if (m_pWnd->kbd.getKey(GLFW_KEY_4) == PRESSED)
-		cube->setTexture(AssetManager::get().getTexture("JanSzescian"));
-	if (m_pWnd->kbd.getKey(GLFW_KEY_5) == PRESSED)
-		SkyBox->setTexture(AssetManager::get().getTexture("SkyBox"));
-	if (m_pWnd->kbd.getKey(GLFW_KEY_6) == PRESSED)
-		SkyBox->setTexture(AssetManager::get().getTexture("SkyBoxDoom"));
-	if (m_pWnd->kbd.getKey(GLFW_KEY_ESCAPE) == PRESSED)
-		glfwSetWindowShouldClose(m_pWnd->getWnd(),GLFW_TRUE);
 
 }
 
@@ -273,14 +306,14 @@ void Engine::composeFrame()
 	m_pWnd->m_pGfx->renderClearFrame(0.2f,0.5f,0.7f);
 
 	m_Shader->use();
-	glm::mat4 projview = m_matProj * m_Camera.getView();
+	glm::mat4 projview = m_Camera.getMatrix();
 	//Draw Cursor
 	m_CameraHUD->drawHUD(*m_Shader, *m_pWnd->m_pGfx);
 	
 	//Draw we
 	//Dó³
 	int x = 50; int z = 50;
-	for (unsigned int i = 0; i < x; i++)
+	for (int i = 0; i < x; i++)
 	{
 		for (int j = 0; j < z; ++j)
 		{
@@ -294,7 +327,7 @@ void Engine::composeFrame()
 
 	//Œciany
 	int y = 5;
-	for (unsigned int i = 0; i < x; i++)
+	for (int i = 0; i < x; i++)
 	{
 		for (int j = 1; j < y+1; ++j)
 		{

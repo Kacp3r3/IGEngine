@@ -1,75 +1,95 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-//================================================================
-//= std Libs
-//================================================================
+
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <GLFW/glfw3.h>
 
 
-//================================================================
-//= My Libs
-//================================================================
-#include "Utility/Vec2.h"
+#include "Utility/Enums.h"
 
 
-//================================================================
-//= Visible Area
-//================================================================
 class Camera
 {
-
-//================================================================
-//= Ctor, Dtor
-//================================================================
 public:
 	Camera()=delete;
 	Camera(glm::vec3 pos);
 	~Camera();
 
-
-//================================================================
-//= Interface
-//================================================================
-	void updatePos(const glm::vec3 pos);
-	void setPos(const glm::vec3 pos);
-	void updateYaw(float x);
-	void updatePitch(float x);
-	void updateFov(float x);
+public:
+	glm::mat4 getMatrix();
+	void processKeyboard(Movement m, float dt);
+	void processMouse(glm::vec2&& offsets, bool constrain);
+	void processScroll(float x);
+	void updateProjection();
+	void updateCameraVectors();
+	void updatePos();
 	void reset();
-	
-//================================================================
-//= Getters
-//================================================================
-	float getFov();
-	glm::vec3 getPos();
-	glm::mat4 getView();
-	glm::vec3 getFront();
-	glm::vec3 getUp();
-	float getYaw();
-	float getPitch();
 
-	bool* getFlight();
-//================================================================
-//= Setters
-//================================================================
+
+public:
+	void doubleSpeed();
+	void normalSpeed();
+
+public:
+	void setPos(const glm::vec3 pos);
 	void setFov(float x);
+	void setFar(float x);
+	void setNear(float x);
+	void setVelocity(float x);
+	void setSensitivity(float x);
+	void setHeight(float x);
+	void setPitch(float x);
+	void setYaw(float x);
+	void setSpeed(float x);
+	void setFly(bool x);
+	
 
+	glm::vec3 getPos() const;
+	glm::vec3 getFront() const;
+	glm::vec3 getUp() const;
+	float getFov() const;
+	float getYaw() const;
+	float getPitch() const;
+	float getFar()const;
+	float getNear()const;
+	float getVelocity()const;
+	float getSensitivity()const;
+	float getHeight()const;
+	float getSpeed() const;
+	bool getFly()const;
+
+	//Imgui shortcut
+	bool* ptrFly();
+	float* ptrHeight();
+	float* ptrNear();
+	float* ptrFar();
+	float* ptrVelocity();
+	float* ptrSensitivity();
+	float* ptrPitch();
+	float* ptrYaw();
+	float* ptrFov();
 
 private:
+	float m_fFov;
+	float m_fYaw;
+	float m_fPitch;
+	float m_fHeight;
+	float m_fSensitivity;
+	float m_fVelocity;
+	float m_fNear;
+	float m_fFar;
+	float m_fSpeed;
+	bool m_bFly;
 	glm::vec3 m_vecPos;
+	glm::vec3 m_vecPosLast;
 	glm::vec3 m_vecFront;
 	glm::vec3 m_vecUp;
-
-	float m_fov;
-	float m_yaw;
-	float m_pitch;
-
-	bool m_bAllowFlight;
-	float m_CamHeight = 1.5f;
+	glm::vec3 m_vecRight;
+	glm::vec3 m_vecWorldUp;
+	glm::mat4 m_matProjection;
 };
 #endif

@@ -1,6 +1,6 @@
 #pragma once
 #include <glad/glad.h>
-#include "Graphics/Renderer.h"
+#include "Graphics/Renderer/Renderer.h"
 //#include <GLFW/glfw3.h>
 class Entity
 {

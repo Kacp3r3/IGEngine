@@ -1,5 +1,6 @@
 #pragma once
-enum KeyState
+
+enum class KeyState
 {
 	UNDEFINED = 0,
 	PRESSED =   1,
@@ -7,7 +8,7 @@ enum KeyState
 	HELD =      3
 };
 
-enum Event
+enum class Event
 {
 	CURSOR_ENTER_SCREEN,
 	CURSOR_LEFT_SCREEEN,
@@ -19,4 +20,12 @@ enum Event
 	KBD_KEY_DOWN,
 	KBD_KEY_UP,
 	KBD_KEY_HELD
+};
+
+enum class Movement
+{
+	FORWARD,
+	BACKWARD,
+	LEFT,
+	RIGHT
 };

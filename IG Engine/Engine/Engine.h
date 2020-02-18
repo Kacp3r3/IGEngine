@@ -1,17 +1,16 @@
 #pragma once
 
+
 #include <iostream>
 
 
 #include "AssetManager/AssetManager.h"
-#include "Window\Window.h"
 #include "Graphics/Camera/CameraHUD.h"
-#include "ImGui\imgui.h"
-#include "ImGui\imgui_impl_glfw.h"
-#include "ImGui\imgui_impl_opengl3.h"
 #include "ImGui/ImGuiManager/ImguiManager.h"
 #include "Utility\Monitor.h"
 #include "Utility\Timer.h"
+#include "Window\Window.h"
+
 
 class Engine
 {
@@ -24,10 +23,8 @@ public:
 		const char* getType()const noexcept override;
 	};
 
+
 public:
-	//================================================================
-	//= Constructor Crew
-	//================================================================
 	Engine();
 	~Engine();
 	Engine(const Engine&) = delete;
@@ -36,24 +33,21 @@ public:
 	Engine& operator = (const Engine&&) = delete;
 
 
-
-	//================================================================
-	//= Interface
-	//================================================================
+public:
 	int Go();
 
 
-
+public:
 	static constexpr int SCR_WIDTH = 1280;
 	static constexpr int SCR_HEIGHT = 720;
+
+
 private:
 	void processInput();
 	void composeFrame();
 	void updateModels(float dt);
 
-	//================================================================
-	//= Callbacks
-	//================================================================
+
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 	static void cursor_enter_callback(GLFWwindow* window, int entered);
@@ -73,12 +67,7 @@ private:
 	Camera m_Camera;
 	Shader* m_Shader;
 	Shader* m_SkyBoxShader;
-	glm::mat4 m_matProj;
-	float sensitivity= 0.3f;
-	float vel = 5.f;
 	bool m_bInputEnabled;
-	float camNear = 0.1f;
-	float camFar = 400.f;
 };
 
 

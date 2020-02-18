@@ -71,7 +71,7 @@ Texture::Texture(const std::vector<std::string>& vec, bool png)
 		else
 		{
 			stbi_image_free(data);
-			throw IGEXCEPTION("Nie udalo sie zaladowac Tekstury");
+			throw std::runtime_error("Failed to load texture: " + vec[i]);
 		}
 	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

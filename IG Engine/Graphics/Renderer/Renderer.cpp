@@ -1,5 +1,4 @@
 #include "Renderer.h"
-#include "../Engine/Engine.h"
 
 
 Renderer::Renderer(int w, int h)
@@ -29,37 +28,37 @@ void Renderer::renderTestFrame()
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);*/
 }
-void Renderer::drawLine(float x1, float y1, float x2, float y2)
-{
-	glBindVertexArray(VAO);
-
-	//Magia z skalowaniem
-	x1 = 2 * x1 / Engine::SCR_WIDTH;
-	y1 = 2 * y1 / Engine::SCR_HEIGHT;
-
-	x2 = 2 * x2 / Engine::SCR_WIDTH;
-	y2 = 2 * y2 / Engine::SCR_HEIGHT;
-
-	//Update vertexow
-	model[0] = x1;
-	model[1] = y1;
-	model[3] = x2;
-	model[4] = y2;
-	
-	//Bindowanie
-	glBindBuffer(GL_ARRAY_BUFFER,VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(model), model, GL_DYNAMIC_DRAW);
-
-
-	//Rysowanie
-	glm::mat4 model = glm::mat4(1.f);
-	//m_SpriteSheetShader.setMat4("model", model);
-	glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
-
-	//Sprzatanie
-	glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
+//void Renderer::drawLine(float x1, float y1, float x2, float y2)
+//{
+//	glBindVertexArray(VAO);
+//
+//	//Magia z skalowaniem
+//	x1 = 2 * x1 / Engine::SCR_WIDTH;
+//	y1 = 2 * y1 / Engine::SCR_HEIGHT;
+//
+//	x2 = 2 * x2 / Engine::SCR_WIDTH;
+//	y2 = 2 * y2 / Engine::SCR_HEIGHT;
+//
+//	//Update vertexow
+//	model[0] = x1;
+//	model[1] = y1;
+//	model[3] = x2;
+//	model[4] = y2;
+//	
+//	//Bindowanie
+//	glBindBuffer(GL_ARRAY_BUFFER,VBO);
+//	glBufferData(GL_ARRAY_BUFFER, sizeof(model), model, GL_DYNAMIC_DRAW);
+//
+//
+//	//Rysowanie
+//	glm::mat4 model = glm::mat4(1.f);
+//	//m_SpriteSheetShader.setMat4("model", model);
+//	glDrawElements(GL_LINES, 2, GL_UNSIGNED_INT, 0);
+//
+//	//Sprzatanie
+//	glBindVertexArray(0);
+//	glBindBuffer(GL_ARRAY_BUFFER, 0);
+//}
 void Renderer::drawLine(GLuint& VAO,glm::vec3& translation)
 {
 	//m_SpriteSheetShader.use();

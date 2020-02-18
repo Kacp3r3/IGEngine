@@ -2,13 +2,13 @@
 
 void AssetManager::loadTextures()
 {
-	auto load = [this](std::string path, std::string name, bool trans) { m_mapTextures[name] = new Texture(path, trans); };
+	auto load = [this](std::string&& path, std::string&& name, bool png) { m_mapTextures[name] = new Texture(path, png); };
 
-	load("zl.jpg", "JanSzescian", false);
-	load("zh.png", "Zuza", true);
+	load("Resources/Pictures/zl.jpg", "JanSzescian", false);
+	load("Resources/Pictures/zh.png", "Zuza", true);
 	//load("bk.jpg", "Greta", false);
 	//load("forloo.jpg", "Loop", true);
-	load("cursor.png", "Cursor", true);
+	load("Resources/Pictures/cursor.png", "Cursor", true);
 
 	std::vector<std::string> files =
 	{
@@ -29,13 +29,14 @@ void AssetManager::loadTextures()
 		"Resources/Skybox/DOOM16front.png",
 		"Resources/Skybox/DOOM16back.png"
 	};
+
 	m_mapTextures["SkyBox"] = new Texture(files,false);
 	m_mapTextures["SkyBoxDoom"] = new Texture(files2,true);
 }
 
 void AssetManager::loadMeshes()
 {
-	auto load = [this](std::string path, std::string name) { m_mapMeshes[name] = new Mesh(path); };
+	auto load = [this](std::string&& path, std::string&& name) { m_mapMeshes[name] = new Mesh(path); };
 
 	load("Resources/Cube.mesh", "Cube");
 	load("Resources/Plane.mesh", "Plane");
@@ -44,12 +45,21 @@ void AssetManager::loadMeshes()
 	
 }
 
-Texture* AssetManager::getTexture(std::string name)
+Texture* AssetManager::getTexture(std::string&& name)
 {
 	return m_mapTextures[name];
 }
 
-Mesh* AssetManager::getMesh(std::string name)
+Mesh* AssetManager::getMesh(std::string&& name)
 {
 	return m_mapMeshes[name];
+}
+
+AssetManager::~AssetManager()
+{
+	for (auto& texture : m_mapTextures)
+		delete texture.second;
+
+	for (auto& mesh : m_mapMeshes)
+		delete mesh.second;
 }

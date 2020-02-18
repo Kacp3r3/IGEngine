@@ -2,6 +2,9 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
 #include <unordered_map>
+#include <glm/glm.hpp>
+
+
 #include "Utility\Vec2.h"
 #include "Utility\Enums.h"
 #include <queue>
@@ -28,13 +31,13 @@ public:
 	//================================================================
 	void resetAllKeys();
 	bool empty();
-	Event getEvent();
+	std::pair<Event, int> getEvent();
 protected:
 	//================================================================
 	//= Members
 	//================================================================
 	std::unordered_map<int, KeyState> m_umapKeys;
-	std::queue<Event> m_queueEvents;
+	std::queue<std::pair<Event,int>> m_queueEvents;
 };
 
 
@@ -64,14 +67,14 @@ public:
 	void updteEnter(int entered);
 	float getScrollYOffset();
 
-	Vec2f getPos();
-	Vec2f getDiff();
+	glm::vec2 getPos();
+	glm::vec2 getDiff();
 	bool insideWindow();
 	void resetScroll();
 
 private:
-	Vec2f m_vecCurMouse;
-	Vec2f m_vecLastMouse;
+	glm::vec2 m_vecCurMouse;
+	glm::vec2 m_vecLastMouse;
 
 	float m_fScroll;
 	bool m_bInScreen;
