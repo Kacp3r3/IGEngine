@@ -130,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AssetManager\AssetManager.cpp" />
+    <ClCompile Include="Graphics\Entities\Entity.cpp" />
     <ClCompile Include="Graphics\Camera\CameraHUD.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Graphics\Camera\Camera.cpp" />
@@ -144,6 +145,7 @@
     <ClCompile Include="ImGui\imgui_impl_glfw.cpp" />
     <ClCompile Include="ImGui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Graphics\Light\Light.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Graphics\Resources\Model.cpp" />
     <ClCompile Include="Graphics\Resources\Mesh.cpp" />
@@ -155,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetManager\AssetManager.h" />
+    <ClInclude Include="Graphics\Entities\Entity.h" />
     <ClInclude Include="Graphics\Camera\CameraHUD.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Graphics\Camera\Camera.h" />
@@ -173,6 +176,8 @@
     <ClInclude Include="ImGui\imstb_truetype.h" />
     <ClInclude Include="Graphics\Resources\Model.h" />
     <ClInclude Include="Graphics\Resources\Mesh.h" />
+    <ClInclude Include="Graphics\Light\Light.h" />
+    <ClInclude Include="Utility\StringUtil.h" />
     <ClInclude Include="Utility\Enums.h" />
     <ClInclude Include="Utility\IGException.h" />
     <ClInclude Include="Utility\Monitor.h" />
@@ -182,6 +187,8 @@
     <ClInclude Include="Window\Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Graphics\Shaders\hud.fs" />
+    <None Include="Graphics\Shaders\hud.vs" />
     <None Include="Graphics\Shaders\sky.fs" />
     <None Include="Graphics\Shaders\fs.fs" />
     <None Include="Graphics\Shaders\sky.vs" />

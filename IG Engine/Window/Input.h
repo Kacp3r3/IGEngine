@@ -4,6 +4,8 @@
 #include <iostream>
 #include <unordered_map>
 #include <queue>
+#include <glm/glm.hpp>
+#include <GLFW/glfw3.h>
 
 
 #include "Utility\Vec2.h"

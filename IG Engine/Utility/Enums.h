@@ -29,3 +29,15 @@ enum class Movement
 	LEFT,
 	RIGHT
 };
+
+enum class Display
+{
+	PRIMARY=1,
+	SECONDARY=2
+};
+
+enum class MeshType
+{
+	MESH,
+	OBJ
+};

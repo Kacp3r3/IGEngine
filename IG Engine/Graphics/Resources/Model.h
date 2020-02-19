@@ -21,16 +21,20 @@ public:
 
 
 public:
-    Model();
+    Model(const Mesh&& mesh);
     ~Model();
     
+
 public:
-    void addData(const Mesh* mesh);
+    void addData(const Mesh& mesh);
     void bindVAO()const;
     
+
 public:
     void setTexture(Texture* x);
-    
+    void haveTexture(bool x);
+
+
 public:
     int getIndicesCount()const;
     GLuint getTexture();
@@ -44,10 +48,11 @@ private:
 
 
 protected:
-    GLuint m_VAO, m_EBO;
-    std::vector<GLuint> m_vecVBO;
     int m_nIndices;
+    bool m_bTexture;
     Texture* m_pTexture;
+    std::vector<GLuint> m_vecVBO;
+    GLuint m_VAO, m_EBO;
 };
 
 #define IGEXCEPTION_MODEL(x) Model::Exception(__LINE__,__FILE__,x);

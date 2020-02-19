@@ -84,6 +84,12 @@
     <ClCompile Include="Graphics\Resources\Mesh.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Entities\Entity.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Light\Light.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Window\Input.h">
@@ -164,6 +170,15 @@
     <ClInclude Include="Graphics\Resources\Mesh.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Entities\Entity.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\StringUtil.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Light\Light.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Graphics\Shaders\vs.vs" />
@@ -173,6 +188,8 @@
     <None Include="Graphics\Shaders\sky.fs" />
     <None Include="Graphics\Shaders\fs.fs" />
     <None Include="Resources\SkyBox.mesh" />
+    <None Include="Graphics\Shaders\hud.fs" />
+    <None Include="Graphics\Shaders\hud.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Pictures\cursor.png">

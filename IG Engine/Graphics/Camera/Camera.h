@@ -21,6 +21,7 @@ public:
 
 public:
 	glm::mat4 getMatrix();
+	glm::mat4 getProjection();
 	void processKeyboard(Movement m, float dt);
 	void processMouse(glm::vec2&& offsets, bool constrain);
 	void processScroll(float x);

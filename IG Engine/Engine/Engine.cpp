@@ -1,13 +1,16 @@
 #include "Engine.h"
+
+int Engine::SCR_WIDTH = 1280;
+int Engine::SCR_HEIGHT = 720;
+
 Engine::Engine()
 	:
-	m_sWindowName("Kacp3r3 Playground")
-	,m_Timer()
+	m_Timer()
 	,imgui()
 	,m_Camera({0.f,1.50f,-3.f})
 	,m_bInputEnabled(true)
+	, l({ 0.f,10.f,0.f }, {1.f,1.f,1.f})
 {
-	
 	//================================================================
 	//= Initialize GLFW and force to use 4.4 OpenGL
 	//================================================================
@@ -16,31 +19,25 @@ Engine::Engine()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+	glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+
 
 	//================================================================
 	//= Creating the Window
 	//================================================================
-	m_pWnd = std::make_unique<Window>(SCR_WIDTH, SCR_HEIGHT, m_sWindowName);
-
-	// Position of the Window
-	int count = 2;
-	int chosen = 2;
-	Monitor* m_pMonitor;
-	GLFWmonitor** tmp = glfwGetMonitors(&count);
-	if (chosen>count) throw IGEXCEPTION_ENG("Nie ma wybranego monitora");
-	m_pMonitor = new Monitor(tmp[chosen-1], "Lewy");
-	m_pMonitor->calculateCenter(SCR_WIDTH, SCR_HEIGHT);
-	glfwSetWindowPos(m_pWnd->getWnd(), m_pMonitor->m_veciCenter._x, m_pMonitor->m_veciCenter._y);
-	glfwSetWindowUserPointer(m_pWnd->getWnd(), m_pWnd.get());
-	glfwSetInputMode(m_pWnd->getWnd(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	m_pWnd = std::make_unique<Window>(SCR_WIDTH, SCR_HEIGHT, "Kacp3r3 Playground");
 
 
 	//================================================================
 	//= Glad Initialization
 	//================================================================
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-		throw std::exception("Failed to load glad");
+		throw IGEXCEPTION_ENG("Failed to load glad");
 	
+
+	//================================================================
+	//= ImGui Initialization
+	//================================================================
 	std::cout << glGetString(GL_VERSION) << std::endl;
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -49,6 +46,7 @@ Engine::Engine()
 	const char* glsl_version = "#version 440";
 	ImGui_ImplGlfw_InitForOpenGL(m_pWnd->getWnd(), true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
+
 
 	//================================================================
 	//= Callbacks
@@ -61,6 +59,7 @@ Engine::Engine()
 	glfwSetCursorEnterCallback(x, cursor_enter_callback);
 	glfwSetScrollCallback(x, scroll_callback);
 	glfwSetFramebufferSizeCallback(x, framebuffer_size_callback);
+	glfwSetWindowSizeCallback(x, window_size_callback);
 
 	//Input options
 	//glfwSetInputMode(x, GLFW_STICKY_KEYS | GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
@@ -70,40 +69,66 @@ Engine::Engine()
 	glEnable(GL_DEPTH_TEST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_CULL_FACE);
-	glFrontFace(GL_CW);
-	//GL_CULL_FACE(GL_BACK);
+	glFrontFace(GL_CCW);
 
 	m_Shader = new Shader("Graphics/Shaders/vs.vs", "Graphics/Shaders/fs.fs");
 	m_Shader->use();
 	m_Shader->setInt("texture1", 0);
+	m_Shader->setVec3("lightColor", l.getColor());
+	m_Shader->setVec3("lightPosition", l.getPos());
 
 	m_SkyBoxShader = new Shader("Graphics/Shaders/sky.vs", "Graphics/Shaders/sky.fs");
 	m_SkyBoxShader->use();
 	m_SkyBoxShader->setInt("skybox", 0);
-	//m_matProj = glm::perspective(glm::radians(75.f), (float)SCR_WIDTH / SCR_HEIGHT, camNear, camFar);
+
+	m_HUDShader = new Shader("Graphics/Shaders/hud.vs", "Graphics/Shaders/hud.fs");
+	m_HUDShader->use();
+	m_HUDShader->setInt("texture1", 0);
 
 	AssetManager::get();
 	AssetManager::get().loadTextures();
-	AssetManager::get().loadMeshes();
+	AssetManager::get().loadModels();
 	
 	m_pWnd->initRenderer();
-	m_CameraHUD = new CameraHUD(AssetManager::get().getTexture("Cursor"), AssetManager::get().getMesh("Plane"));
-	cube = new Model();
-	cube->addData(AssetManager::get().getMesh("Cube"));
-	cube->setTexture(AssetManager::get().getTexture("JanSzescian"));
-	SkyBox = new Model();
-	SkyBox->addData(AssetManager::get().getMesh("SkyBox"));
-	SkyBox->setTexture(AssetManager::get().getTexture("SkyBox"));
+	m_CameraHUD = new CameraHUD(AssetManager::get().getModel("Plane"),AssetManager::get().getTexture("Cursor"),*m_HUDShader);
+	
+	stall = new Entity(AssetManager::get().getModel("Dragon"), AssetManager::get().getTexture("JanSzescian"));
+	SkyBox = new Entity(AssetManager::get().getModel("SkyBox"), AssetManager::get().getTexture("SkyBox"));
+	SkyBox->setScale(2.f);
+	//stall = new Entity(AssetManager::get().getModel("Stall"), AssetManager::get().getTexture("Stall"));
+	int w = 50; int z = 50;
+	int y = 5;
+	m_vecEntities.reserve(w * z + y * w);
+	//Prepare scene
+	for (int i = 0; i < w; i++)
+		for (int j = 0; j < z; ++j)
+		{
+			m_vecEntities.push_back(new Entity(AssetManager::get().getModel("Cube"), AssetManager::get().getTexture("JanSzescian")));
+			m_vecEntities.back()->setPos(glm::vec3(((float)i - w / 2.f) - .5f, -.5f, ((float)j - z / 2.f) - .5f));
+		}
+
+	//Œciany
+	for (int i = 0; i < w; i++)
+		for (int j = 1; j < y + 1; ++j)
+		{
+			if ((i == 25 || i == 26) && (j == 1 || j == 2)) continue;
+			m_vecEntities.push_back(new Entity(AssetManager::get().getModel("Cube"), AssetManager::get().getTexture("JanSzescian")));
+			m_vecEntities.back()->setPos(glm::vec3((float)i - w / 2.f - .5f, (float)j - .5f, 2.f - .5f));
+		}
 }
 
 Engine::~Engine()
 {
 	delete m_Shader;
+	delete m_SkyBoxShader;
+	delete SkyBox;
+	for (auto entity : m_vecEntities)
+		delete entity;
 }
 
 int Engine::Go()
 {
-	//ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+	float color[3] = { l.getColor().r,l.getColor().g,l.getColor().b };
 	float x = 0.f, y = 0.f, z = 0.f;
 	glfwSetCursorPos(m_pWnd->getWnd(), SCR_WIDTH / 2.f, SCR_HEIGHT / 2.f);
 	while (!glfwWindowShouldClose(m_pWnd->getWnd()))
@@ -142,7 +167,7 @@ int Engine::Go()
 			ImGui::Begin("IGEngine");                          // Create a window called "Hello, world!" and append into it.
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			//ImGui::SameLine();
-			ImGui::Text("Cursor %s", m_bInputEnabled?"Disabled":"Enabled");               // Display some text (you can use a format strings too)
+			ImGui::Text("Cursor %s", m_bInputEnabled ? "Disabled" : "Enabled");               // Display some text (you can use a format strings too)
 			if (!m_bInputEnabled)
 			{
 				ImGui::Text("Cursor inside window: %s", m_pWnd->mouse.insideWindow() ? "True" : "False");               // Display some text (you can use a format strings too)
@@ -163,18 +188,36 @@ int Engine::Go()
 			ImGui::Text("Camera pos x: %2.2f y: %2.2f z: %2.2f", m_Camera.getPos().x, m_Camera.getPos().y, m_Camera.getPos().z);               // Display some text (you can use a format strings too)
 			ImGui::Text("Camera angles yaw: %2.2f pitch: %2.2f", m_Camera.getYaw(), m_Camera.getPitch());               // Display some text (you can use a format strings too)
 			ImGui::Text("Camera speed: %2.2f/s", m_Camera.getSpeed());               // Display some text (you can use a format strings too)
-			if(ImGui::Checkbox("Camera fly", m_Camera.ptrFly())) m_Camera.updatePos();      // Edit bools storing our window open/close state
+			if (ImGui::Checkbox("Camera fly", m_Camera.ptrFly())) m_Camera.updatePos();      // Edit bools storing our window open/close state
 			//ImGui::Checkbox("Another Window", &show_another_window);
 			//ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-			//ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
-
-			//if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
-				//counter++;
+			if (!m_bInputEnabled)
+			{
+				ImGui::Begin("Light properties");
+				if (ImGui::SliderFloat3("Position ", (float*)l.ptrPos(), 0.f, 10.f))
+				{
+					m_Shader->use();
+					m_Shader->setVec3("lightPosition", l.getPos());
+				}
+				if (ImGui::ColorEdit3("Light Color", (float*)l.ptrColor()))
+				{
+					m_Shader->use();
+					m_Shader->setVec3("lightColor", l.getColor());
+				}
+				ImGui::End();
+				ImGui::InputInt("Width: ", &SCR_WIDTH, 10, 100);
+				ImGui::InputInt("Height: ", &SCR_HEIGHT, 10, 100);
+				if (ImGui::Button("Change Size"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+				{
+					glfwSetWindowSize(m_pWnd->getWnd(), SCR_WIDTH, SCR_HEIGHT);
+					m_Camera.updateProjection();
+				}
+			}
 			//ImGui::SameLine();
 			//ImGui::Text("counter = %d", counter);
 
 			ImGui::End();
-
+			//ImGui::ShowDemoWindow();
 			
 		}
 		ImGui::Render();
@@ -241,16 +284,16 @@ void Engine::processInput()
 							glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 							break;
 					case GLFW_KEY_3:
-							cube->setTexture(AssetManager::get().getTexture("Zuza"));
+							//cube->setTexture(AssetManager::get().getTexture("Zuza"));
 							break;
 					case GLFW_KEY_4:
-							cube->setTexture(AssetManager::get().getTexture("JanSzescian"));
+							//cube->setTexture(AssetManager::get().getTexture("JanSzescian"));
 							break;
 					case GLFW_KEY_5:
-							SkyBox->setTexture(AssetManager::get().getTexture("SkyBox"));
+							//SkyBox->setTexture(AssetManager::get().getTexture("SkyBox"));
 							break;
 					case GLFW_KEY_6:
-							SkyBox->setTexture(AssetManager::get().getTexture("SkyBoxDoom"));
+							//SkyBox->setTexture(AssetManager::get().getTexture("SkyBoxDoom"));
 							break;
 					case GLFW_KEY_ESCAPE:
 							glfwSetWindowShouldClose(m_pWnd->getWnd(), GLFW_TRUE);
@@ -305,40 +348,22 @@ void Engine::composeFrame()
 {
 	m_pWnd->m_pGfx->renderClearFrame(0.2f,0.5f,0.7f);
 
-	m_Shader->use();
-	glm::mat4 projview = m_Camera.getMatrix();
+	glm::mat4 projview = m_Camera.getProjection() * m_Camera.getMatrix();
 	//Draw Cursor
-	m_CameraHUD->drawHUD(*m_Shader, *m_pWnd->m_pGfx);
+	m_HUDShader->use();
+	m_CameraHUD->drawHUD(*m_HUDShader, *m_pWnd->m_pGfx);
 	
-	//Draw we
-	//Dó³
-	int x = 50; int z = 50;
-	for (int i = 0; i < x; i++)
-	{
-		for (int j = 0; j < z; ++j)
-		{
-			glm::mat4 model = projview;
-			model = glm::translate(model, glm::vec3(((float)i - x / 2.f) - .5f, -.5f, ((float)j - z / 2.f) - .5f));
-			model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-			m_Shader->setMat4("model", model);
-			m_pWnd->m_pGfx->drawModel(cube);
-		}
-	}
-
-	//Œciany
-	int y = 5;
-	for (int i = 0; i < x; i++)
-	{
-		for (int j = 1; j < y+1; ++j)
-		{
-			if((i==25 || i==26 )&& (j==1 || j ==2)) continue;
-			glm::mat4 model = projview;
-			model = glm::translate(model, glm::vec3((float)i - x / 2.f -.5f, (float)j-.5f,2.f-.5f));
-			model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
-			m_Shader->setMat4("model", model);
-			m_pWnd->m_pGfx->drawModel(cube);
-		}
-	}
+	//Draw scene
+	m_Shader->use();
+	m_Shader->setMat4("viewMatrix", m_Camera.getMatrix());
+	m_Shader->setMat4("projectionMatrix", m_Camera.getProjection());
+	//for (auto cube : m_vecEntities)
+	//{
+	//	m_Shader->setMat4("transformationMatrix", cube->getTransformationMatrix());
+	//	m_pWnd->m_pGfx->drawModel(cube->getModel());
+	//}
+	m_Shader->setMat4("transformationMatrix", stall->getTransformationMatrix());
+	m_pWnd->m_pGfx->drawModel(stall->getModel());
 
 
 	//SKYBOX STUFF XD
@@ -347,9 +372,10 @@ void Engine::composeFrame()
 	glDepthMask(GL_FALSE);
 	m_SkyBoxShader->use();
 	m_SkyBoxShader->setMat4("model", tmp);
-	SkyBox->bindVAO();
-	glBindTexture(GL_TEXTURE_CUBE_MAP, SkyBox->getTexture());
-	glDrawElements(GL_TRIANGLES, SkyBox->getIndicesCount(), GL_UNSIGNED_INT, nullptr);
+	auto model = SkyBox->getModel();
+	model->bindVAO();
+	glBindTexture(GL_TEXTURE_CUBE_MAP, model->getTexture());
+	glDrawElements(GL_TRIANGLES, model->getIndicesCount(), GL_UNSIGNED_INT, nullptr);
 	glDepthMask(GL_TRUE);
 }
 
@@ -386,7 +412,12 @@ void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height
 {
 	glViewport(0, 0, width, height);
 }
-
+void Engine::window_size_callback(GLFWwindow* window, int width, int height)
+{
+	static_cast<Window*>(glfwGetWindowUserPointer(window))->updateSize(width, height);
+	ImGui::GetIO().DisplaySize.x = width;
+	ImGui::GetIO().DisplaySize.y = height;
+}
 
 Engine::Exception::Exception(int line, const char* file, const char* what) noexcept
 	:

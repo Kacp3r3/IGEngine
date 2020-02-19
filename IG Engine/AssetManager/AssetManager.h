@@ -17,11 +17,11 @@ public:
 	}
 
 	void loadTextures();
-	void loadMeshes();
+	void loadModels();
 
 
 	Texture* getTexture(std::string&& name);
-	Mesh* getMesh(std::string&& name);
+	Model* getModel(std::string&& name);
 
 private:
 	AssetManager()= default;
@@ -32,7 +32,7 @@ private:
 
 private:
 	std::map<std::string, Texture*> m_mapTextures;
-	std::map<std::string, Mesh*> m_mapMeshes;
+	std::map<std::string, Model*> m_mapModels;
 };
 
 

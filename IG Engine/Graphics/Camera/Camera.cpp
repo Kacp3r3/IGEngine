@@ -160,7 +160,12 @@ glm::vec3 Camera::getPos() const
 
 glm::mat4 Camera::getMatrix()
 {
-	return m_matProjection* glm::lookAt(m_vecPos, m_vecPos + m_vecFront, m_vecUp);
+	return glm::lookAt(m_vecPos, m_vecPos + m_vecFront, m_vecUp);
+}
+
+glm::mat4 Camera::getProjection()
+{
+	return m_matProjection;
 }
 
 glm::vec3 Camera::getFront()const

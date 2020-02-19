@@ -7,6 +7,8 @@
 #include "AssetManager/AssetManager.h"
 #include "Graphics/Camera/CameraHUD.h"
 #include "Graphics/Camera/Camera.h"
+#include "Graphics/Entities/Entity.h"
+#include "Graphics/Light/Light.h"
 #include "ImGui/ImGuiManager/ImguiManager.h"
 #include "Utility\Monitor.h"
 #include "Utility\Timer.h"
@@ -39,8 +41,8 @@ public:
 
 
 public:
-	static constexpr int SCR_WIDTH = 1280;
-	static constexpr int SCR_HEIGHT = 720;
+	static int SCR_WIDTH;
+	static int SCR_HEIGHT;
 
 
 private:
@@ -55,19 +57,21 @@ private:
 	static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 	static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-	
+	static void window_size_callback(GLFWwindow* window, int width, int height);
 
 private:
 	Timer m_Timer;
 	ImguiManager imgui;
 	std::unique_ptr<Window> m_pWnd;
-	std::string m_sWindowName;
-	Model* cube;
-	Model* SkyBox;
+	std::vector<Entity*> m_vecEntities;
+	Entity* SkyBox;
+	Entity* stall;
+	Light l;
 	CameraHUD* m_CameraHUD;
 	Camera m_Camera;
 	Shader* m_Shader;
 	Shader* m_SkyBoxShader;
+	Shader* m_HUDShader;
 	bool m_bInputEnabled;
 };
 

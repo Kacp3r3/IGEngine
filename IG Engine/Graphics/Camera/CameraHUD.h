@@ -9,11 +9,11 @@
 class CameraHUD
 {
 public:
-	CameraHUD(Texture* cur, Mesh* mesh);
+	CameraHUD(Model* m, Texture* cur, Shader& s);
 
 	void drawHUD(Shader& s,Renderer& gfx);
 private:
 	glm::mat4 m_matOrtho;
-	Model m_Croshair;
+	Model* m_Croshair;
 };
 
