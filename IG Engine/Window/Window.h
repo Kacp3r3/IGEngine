@@ -9,7 +9,7 @@
 #include "Input.h"
 #include "Utility/IGException.h"
 #include "Utility/Monitor.h"
-#include "Graphics/Renderer/Renderer.h"
+#include "Graphics/Renderer/RendererMaster.h"
 
 
 class Window
@@ -44,7 +44,7 @@ public:
 public:
 	Keyboard kbd;
 	Mouse mouse;
-	std::unique_ptr<Renderer> m_pGfx;
+	std::unique_ptr<RendererMaster> m_pGfx;
 
 
 private:

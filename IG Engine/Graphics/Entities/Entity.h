@@ -7,6 +7,7 @@
 
 
 #include "Graphics/Resources/Model.h"
+#include "Graphics/Resources/Material.h"
 
 
 class Entity
@@ -30,6 +31,7 @@ public:
 	glm::vec3 getPos();
 	glm::vec3 getRotation();
 	Model* getModel();
+	static Material m_Material;
 	
 private:
 	void updateTransformMatrix();

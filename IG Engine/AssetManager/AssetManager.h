@@ -18,7 +18,7 @@ public:
 
 	void loadTextures();
 	void loadModels();
-
+	void loadModel(Model* m, std::string name);
 
 	Texture* getTexture(std::string&& name);
 	Model* getModel(std::string&& name);

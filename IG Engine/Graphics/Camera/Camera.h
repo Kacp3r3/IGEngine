@@ -21,11 +21,8 @@ public:
 
 public:
 	glm::mat4 getMatrix();
-	glm::mat4 getProjection();
 	void processKeyboard(Movement m, float dt);
 	void processMouse(glm::vec2&& offsets, bool constrain);
-	void processScroll(float x);
-	void updateProjection();
 	void updateCameraVectors();
 	void updatePos();
 	void reset();
@@ -37,9 +34,6 @@ public:
 
 public:
 	void setPos(const glm::vec3 pos);
-	void setFov(float x);
-	void setFar(float x);
-	void setNear(float x);
 	void setVelocity(float x);
 	void setSensitivity(float x);
 	void setHeight(float x);
@@ -52,11 +46,8 @@ public:
 	glm::vec3 getPos() const;
 	glm::vec3 getFront() const;
 	glm::vec3 getUp() const;
-	float getFov() const;
 	float getYaw() const;
 	float getPitch() const;
-	float getFar()const;
-	float getNear()const;
 	float getVelocity()const;
 	float getSensitivity()const;
 	float getHeight()const;
@@ -66,13 +57,11 @@ public:
 	//Imgui shortcut
 	bool* ptrFly();
 	float* ptrHeight();
-	float* ptrNear();
-	float* ptrFar();
 	float* ptrVelocity();
 	float* ptrSensitivity();
 	float* ptrPitch();
 	float* ptrYaw();
-	float* ptrFov();
+
 
 private:
 	float m_fFov;
@@ -91,6 +80,5 @@ private:
 	glm::vec3 m_vecUp;
 	glm::vec3 m_vecRight;
 	glm::vec3 m_vecWorldUp;
-	glm::mat4 m_matProjection;
 };
 #endif

@@ -60,9 +60,6 @@
     <ClCompile Include="ImGui\imgui_widgets.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Renderer\Renderer.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\Camera\Camera.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
@@ -88,6 +85,24 @@
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Light\Light.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Renderer\RendererMaster.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Renderer\EntityRenderer.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Renderer\HUDRenderer.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Renderer\TerrainRenderer.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Resources\Material.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="World\Structures\Terrain.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
@@ -146,9 +161,6 @@
     <ClInclude Include="ImGui\imstb_truetype.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Renderer\Renderer.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\Camera\Camera.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
@@ -179,17 +191,37 @@
     <ClInclude Include="Graphics\Light\Light.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Renderer\EntityRenderer.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Renderer\HUDRenderer.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Renderer\RendererMaster.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Renderer\TerrainRenderer.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Resources\Material.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="World\Structures\Terrain.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Graphics\Shaders\vs.vs" />
     <None Include="Resources\Cube.mesh" />
     <None Include="Resources\Plane.mesh" />
     <None Include="Graphics\Shaders\sky.vs" />
     <None Include="Graphics\Shaders\sky.fs" />
-    <None Include="Graphics\Shaders\fs.fs" />
     <None Include="Resources\SkyBox.mesh" />
     <None Include="Graphics\Shaders\hud.fs" />
     <None Include="Graphics\Shaders\hud.vs" />
+    <None Include="Graphics\Shaders\terrain.vs" />
+    <None Include="Graphics\Shaders\terrain.fs" />
+    <None Include="Graphics\Shaders\entity.fs" />
+    <None Include="Graphics\Shaders\entity.vs" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Pictures\cursor.png">

@@ -39,7 +39,7 @@ Window::~Window()
 
 void Window::initRenderer()
 {
-	m_pGfx = std::make_unique<Renderer>();
+	m_pGfx = std::make_unique<RendererMaster>();
 	if(m_pGfx == nullptr) throw IGEXCEPTION_WND("Renderer creation failed");
 }
 

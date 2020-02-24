@@ -42,6 +42,17 @@ void Mesh::loadMesh(std::fstream& f)
         m_vecTextureCoords.push_back(x);
         m_vecTextureCoords.push_back(y);
     }
+
+    //Normals
+    f >> nVertex;
+    for (int i = 0; i < nVertex; ++i)
+    {
+        f >> x >> y >> z;
+        m_vecNormals.push_back(x);
+        m_vecNormals.push_back(y);
+        m_vecNormals.push_back(z);
+    }
+
     if (m_vecTextureCoords.size() < 1)m_vecTextureCoords = std::vector<GLfloat>(m_vecPositions.size(), 0.f);
     if (m_vecNormals.size() < 1)m_vecNormals = std::vector<GLfloat>(m_vecPositions.size(), 0.f);
     //indices
@@ -121,5 +132,29 @@ void Mesh::loadObj(std::fstream& f)
             }
         }
     } while (std::getline(f, line));
-    int a;
+}
+
+Mesh::Mesh(float pos[], float norm[], int nV, float txt[], int nT, int ind[], int nI)
+{
+    m_vecPositions.reserve(nV);
+    m_vecNormals.reserve(nV);
+    m_vecTextureCoords.reserve(nT);
+    m_vecIndices.reserve(nI);
+    for (int i = 0; i < nV; ++i)
+    {
+        m_vecPositions.push_back(pos[i]);
+        m_vecNormals.push_back(norm[i]);
+    }
+    for (int i = 0; i < nT; ++i)
+    {
+        m_vecTextureCoords.push_back(txt[i]);
+    }
+    for (int i = 0; i < nI; ++i)
+    {
+        m_vecIndices.push_back(ind[i]);
+    }
+    delete[]pos;
+    delete[]ind;
+    delete[]txt;
+    delete[]norm;
 }

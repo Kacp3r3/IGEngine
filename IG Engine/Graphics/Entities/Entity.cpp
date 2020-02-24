@@ -1,5 +1,7 @@
 #include "Entity.h"
 
+Material Entity::m_Material = Material("Resources/material.data");
+
 Entity::Entity(Model* model, Texture* txt)
 	:
 	m_Model(model)

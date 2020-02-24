@@ -5,7 +5,6 @@
 
 
 #include "AssetManager/AssetManager.h"
-#include "Graphics/Camera/CameraHUD.h"
 #include "Graphics/Camera/Camera.h"
 #include "Graphics/Entities/Entity.h"
 #include "Graphics/Light/Light.h"
@@ -61,17 +60,15 @@ private:
 
 private:
 	Timer m_Timer;
-	ImguiManager imgui;
+	ImguiManager m_Imgui;
 	std::unique_ptr<Window> m_pWnd;
 	std::vector<Entity*> m_vecEntities;
 	Entity* SkyBox;
 	Entity* stall;
-	Light l;
-	CameraHUD* m_CameraHUD;
+	Entity* stall2;
+	std::vector<Terrain*> tr;
+	Light m_Sun;
 	Camera m_Camera;
-	Shader* m_Shader;
-	Shader* m_SkyBoxShader;
-	Shader* m_HUDShader;
 	bool m_bInputEnabled;
 };
 

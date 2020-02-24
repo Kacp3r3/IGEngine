@@ -1,15 +1,15 @@
 #include "Engine.h"
 
-int Engine::SCR_WIDTH = 1280;
-int Engine::SCR_HEIGHT = 720;
+int Engine::SCR_WIDTH = 1600;
+int Engine::SCR_HEIGHT = 900;
 
 Engine::Engine()
 	:
-	m_Timer()
-	,imgui()
+	 m_Timer()
+	,m_Imgui()
 	,m_Camera({0.f,1.50f,-3.f})
 	,m_bInputEnabled(true)
-	, l({ 0.f,10.f,0.f }, {1.f,1.f,1.f})
+	,m_Sun({ -169.f,177.f,-245.f }, {1.f,1.f,1.f})
 {
 	//================================================================
 	//= Initialize GLFW and force to use 4.4 OpenGL
@@ -33,19 +33,7 @@ Engine::Engine()
 	//================================================================
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
 		throw IGEXCEPTION_ENG("Failed to load glad");
-	
-
-	//================================================================
-	//= ImGui Initialization
-	//================================================================
 	std::cout << glGetString(GL_VERSION) << std::endl;
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGui::StyleColorsDark();
-	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	const char* glsl_version = "#version 440";
-	ImGui_ImplGlfw_InitForOpenGL(m_pWnd->getWnd(), true);
-	ImGui_ImplOpenGL3_Init(glsl_version);
 
 
 	//================================================================
@@ -61,86 +49,61 @@ Engine::Engine()
 	glfwSetFramebufferSizeCallback(x, framebuffer_size_callback);
 	glfwSetWindowSizeCallback(x, window_size_callback);
 
-	//Input options
-	//glfwSetInputMode(x, GLFW_STICKY_KEYS | GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
 
-	glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
-	glEnable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_CULL_FACE);
-	glFrontFace(GL_CCW);
-
-	m_Shader = new Shader("Graphics/Shaders/vs.vs", "Graphics/Shaders/fs.fs");
-	m_Shader->use();
-	m_Shader->setInt("texture1", 0);
-	m_Shader->setVec3("lightColor", l.getColor());
-	m_Shader->setVec3("lightPosition", l.getPos());
-
-	m_SkyBoxShader = new Shader("Graphics/Shaders/sky.vs", "Graphics/Shaders/sky.fs");
-	m_SkyBoxShader->use();
-	m_SkyBoxShader->setInt("skybox", 0);
-
-	m_HUDShader = new Shader("Graphics/Shaders/hud.vs", "Graphics/Shaders/hud.fs");
-	m_HUDShader->use();
-	m_HUDShader->setInt("texture1", 0);
-
+	//================================================================
+	//= load Resources
+	//================================================================
 	AssetManager::get();
 	AssetManager::get().loadTextures();
 	AssetManager::get().loadModels();
-	
-	m_pWnd->initRenderer();
-	m_CameraHUD = new CameraHUD(AssetManager::get().getModel("Plane"),AssetManager::get().getTexture("Cursor"),*m_HUDShader);
-	
-	stall = new Entity(AssetManager::get().getModel("Dragon"), AssetManager::get().getTexture("JanSzescian"));
-	SkyBox = new Entity(AssetManager::get().getModel("SkyBox"), AssetManager::get().getTexture("SkyBox"));
-	SkyBox->setScale(2.f);
-	//stall = new Entity(AssetManager::get().getModel("Stall"), AssetManager::get().getTexture("Stall"));
-	int w = 50; int z = 50;
-	int y = 5;
-	m_vecEntities.reserve(w * z + y * w);
-	//Prepare scene
-	for (int i = 0; i < w; i++)
-		for (int j = 0; j < z; ++j)
-		{
-			m_vecEntities.push_back(new Entity(AssetManager::get().getModel("Cube"), AssetManager::get().getTexture("JanSzescian")));
-			m_vecEntities.back()->setPos(glm::vec3(((float)i - w / 2.f) - .5f, -.5f, ((float)j - z / 2.f) - .5f));
-		}
 
-	//Œciany
-	for (int i = 0; i < w; i++)
-		for (int j = 1; j < y + 1; ++j)
-		{
-			if ((i == 25 || i == 26) && (j == 1 || j == 2)) continue;
-			m_vecEntities.push_back(new Entity(AssetManager::get().getModel("Cube"), AssetManager::get().getTexture("JanSzescian")));
-			m_vecEntities.back()->setPos(glm::vec3((float)i - w / 2.f - .5f, (float)j - .5f, 2.f - .5f));
-		}
+	//================================================================
+	//= Render init
+	//================================================================
+	m_Imgui.initImGui(m_pWnd->getWnd());
+	m_pWnd->initRenderer();
+
+	//Input options
+	//glfwSetInputMode(x, GLFW_STICKY_KEYS | GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
+
+	tr.push_back(new Terrain(0, 0, AssetManager::get().getTexture("Grass")));
+	tr.push_back(new Terrain(1, 0, AssetManager::get().getTexture("Grass")));
+	tr.push_back(new Terrain(0, 1, AssetManager::get().getTexture("Grass")));
+	tr.push_back(new Terrain(1, 1, AssetManager::get().getTexture("Grass")));
+	for(auto ter : tr)
+		m_pWnd->m_pGfx->addTerrain(ter);
+	SkyBox = new Entity(AssetManager::get().getModel("SkyBox"), AssetManager::get().getTexture("SkyBox"));
+	m_vecEntities.reserve(2);
+
+	stall = new Entity(AssetManager::get().getModel("Dragon"), AssetManager::get().getTexture("JanSzescian"));
+	stall->setScale(2.5f);
+	stall->setPos({ 0.f,0.f,0.f });
+	m_pWnd->m_pGfx->addEntity(stall);
+	stall2 = new Entity(AssetManager::get().getModel("Stall"), AssetManager::get().getTexture("Stall"));
+	stall2->setScale(1.f);
+	stall2->setPos({ 0.f,0.f,-20.f });
+	m_pWnd->m_pGfx->addEntity(stall2);
 }
 
 Engine::~Engine()
 {
-	delete m_Shader;
-	delete m_SkyBoxShader;
-	delete SkyBox;
 	for (auto entity : m_vecEntities)
 		delete entity;
+
+	for (auto terrain : tr)
+		delete terrain;
 }
 
 int Engine::Go()
 {
-	float color[3] = { l.getColor().r,l.getColor().g,l.getColor().b };
-	float x = 0.f, y = 0.f, z = 0.f;
-	glfwSetCursorPos(m_pWnd->getWnd(), SCR_WIDTH / 2.f, SCR_HEIGHT / 2.f);
+	//float x = 0.f, y = 0.f, z = 0.f;
+	//glfwSetCursorPos(m_pWnd->getWnd(), SCR_WIDTH / 2.f, SCR_HEIGHT / 2.f);
 	while (!glfwWindowShouldClose(m_pWnd->getWnd()))
 	{
 		//Providing delta Time
 		m_Timer.Mark();
 		while (m_Timer.getDelta() < m_Timer.getSingleFrameTime())
 			m_Timer.Mark();
-
-		//Updating Label name
-		//std::string a = m_sWindowName + " FPS: " + std::to_string((int)round(1 / m_Timer.getDelta()));
-		//glfwSetWindowTitle(m_pWnd->getWnd(), a.c_str());
 
 		
 		//================================================================
@@ -160,13 +123,12 @@ int Engine::Go()
 		//================================================================
 		//= ImGui Stuff
 		//================================================================
-		ImGui_ImplOpenGL3_NewFrame();
-		ImGui_ImplGlfw_NewFrame();
-		ImGui::NewFrame();
+		m_Imgui.beginFrame();
 		{
 			ImGui::Begin("IGEngine");                          // Create a window called "Hello, world!" and append into it.
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			//ImGui::SameLine();
+			ImGui::Text("Current material: %s", Entity::m_Material.getCurrName());
 			ImGui::Text("Cursor %s", m_bInputEnabled ? "Disabled" : "Enabled");               // Display some text (you can use a format strings too)
 			if (!m_bInputEnabled)
 			{
@@ -175,9 +137,9 @@ int Engine::Go()
 
 				ImGui::Begin("Camera properties");
 				ImGui::Text("Perspective");
-				if (ImGui::SliderFloat("Far", m_Camera.ptrFar(), 10.0f, 400.0f)) m_Camera.updateProjection();
-				if (ImGui::SliderFloat("Near", m_Camera.ptrNear(), 0.1f, 10.0f)) m_Camera.updateProjection();
-				if (ImGui::SliderFloat("Fov", m_Camera.ptrFov(), 1.0f, 150.0f)) m_Camera.updateProjection();
+				if (ImGui::SliderFloat("Far", m_pWnd->m_pGfx->ptrFar(), 10.0f, 400.0f)) m_pWnd->m_pGfx->updateProjection();
+				if (ImGui::SliderFloat("Near", m_pWnd->m_pGfx->ptrNear(), 0.1f, 10.0f)) m_pWnd->m_pGfx->updateProjection();
+				if (ImGui::SliderFloat("Fov", m_pWnd->m_pGfx->ptrFov(), 1.0f, 150.0f)) m_pWnd->m_pGfx->updateProjection();
 				ImGui::Text("Properties");
 				ImGui::SliderFloat("Velocity", m_Camera.ptrVelocity(), 1.0f, 20.0f);
 				if (!m_Camera.getFly())
@@ -194,24 +156,25 @@ int Engine::Go()
 			if (!m_bInputEnabled)
 			{
 				ImGui::Begin("Light properties");
-				if (ImGui::SliderFloat3("Position ", (float*)l.ptrPos(), 0.f, 10.f))
-				{
-					m_Shader->use();
-					m_Shader->setVec3("lightPosition", l.getPos());
-				}
-				if (ImGui::ColorEdit3("Light Color", (float*)l.ptrColor()))
-				{
-					m_Shader->use();
-					m_Shader->setVec3("lightColor", l.getColor());
-				}
+				ImGui::SliderFloat3("Position ", (float*)m_Sun.ptrPos(), -20.f, 20.f);
+				ImGui::ColorEdit3("Light Color", (float*)m_Sun.ptrColor());
 				ImGui::End();
+
+
 				ImGui::InputInt("Width: ", &SCR_WIDTH, 10, 100);
 				ImGui::InputInt("Height: ", &SCR_HEIGHT, 10, 100);
 				if (ImGui::Button("Change Size"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
 				{
 					glfwSetWindowSize(m_pWnd->getWnd(), SCR_WIDTH, SCR_HEIGHT);
-					m_Camera.updateProjection();
+					m_pWnd->m_pGfx->updateProjection();
 				}
+
+				ImGui::Begin("Light terrain properties");
+				ImGui::SliderFloat3("Ambient ", (float*)&RendererMaster::ambient, 0.f, 1.f);
+				ImGui::SliderFloat3("Specular ", (float*)&RendererMaster::specular, 0.f, 1.f);
+				ImGui::SliderFloat3("Diffuse ", (float*)&RendererMaster::diffuse, 0.f, 1.f);
+				ImGui::SliderFloat("Shininess", &RendererMaster::shininees, 0.f,2.f);
+				ImGui::End();
 			}
 			//ImGui::SameLine();
 			//ImGui::Text("counter = %d", counter);
@@ -220,8 +183,7 @@ int Engine::Go()
 			//ImGui::ShowDemoWindow();
 			
 		}
-		ImGui::Render();
-		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+		m_Imgui.endFrame();
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(m_pWnd->getWnd());
@@ -250,7 +212,7 @@ void Engine::processInput()
 			}
 			case Event::MOUSE_SCROLL:
 			{
-				if (m_bInputEnabled) m_Camera.processScroll(m_pWnd->mouse.getScrollYOffset());
+				if (m_bInputEnabled) m_pWnd->m_pGfx->processScroll(m_pWnd->mouse.getScrollYOffset());
 				break;
 			}
 			case Event::MOUSE_KEY_DOWN:
@@ -276,6 +238,7 @@ void Engine::processInput()
 							break;
 					case GLFW_KEY_SPACE:
 							m_Camera.reset();
+							m_pWnd->m_pGfx->resetProjection();
 							break;
 					case GLFW_KEY_1:
 							glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -285,6 +248,7 @@ void Engine::processInput()
 							break;
 					case GLFW_KEY_3:
 							//cube->setTexture(AssetManager::get().getTexture("Zuza"));
+							Entity::m_Material.nextMaterial();
 							break;
 					case GLFW_KEY_4:
 							//cube->setTexture(AssetManager::get().getTexture("JanSzescian"));
@@ -346,42 +310,12 @@ void Engine::processInput()
 
 void Engine::composeFrame()
 {
-	m_pWnd->m_pGfx->renderClearFrame(0.2f,0.5f,0.7f);
-
-	glm::mat4 projview = m_Camera.getProjection() * m_Camera.getMatrix();
-	//Draw Cursor
-	m_HUDShader->use();
-	m_CameraHUD->drawHUD(*m_HUDShader, *m_pWnd->m_pGfx);
-	
-	//Draw scene
-	m_Shader->use();
-	m_Shader->setMat4("viewMatrix", m_Camera.getMatrix());
-	m_Shader->setMat4("projectionMatrix", m_Camera.getProjection());
-	//for (auto cube : m_vecEntities)
-	//{
-	//	m_Shader->setMat4("transformationMatrix", cube->getTransformationMatrix());
-	//	m_pWnd->m_pGfx->drawModel(cube->getModel());
-	//}
-	m_Shader->setMat4("transformationMatrix", stall->getTransformationMatrix());
-	m_pWnd->m_pGfx->drawModel(stall->getModel());
-
-
-	//SKYBOX STUFF XD
-	glm::mat4 tmp = projview;
-	tmp = glm::scale(tmp, glm::vec3(150.f, 150.f, 150.f));
-	glDepthMask(GL_FALSE);
-	m_SkyBoxShader->use();
-	m_SkyBoxShader->setMat4("model", tmp);
-	auto model = SkyBox->getModel();
-	model->bindVAO();
-	glBindTexture(GL_TEXTURE_CUBE_MAP, model->getTexture());
-	glDrawElements(GL_TRIANGLES, model->getIndicesCount(), GL_UNSIGNED_INT, nullptr);
-	glDepthMask(GL_TRUE);
+	m_pWnd->m_pGfx->renderScene(m_Sun, m_Camera);
 }
 
 void Engine::updateModels(float dt)
 {
-
+	m_Sun.setPos({ sin(glfwGetTime()) * 60.f,35.f,cos(glfwGetTime()) * 60.f });
 }
 
 void Engine::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -415,8 +349,8 @@ void Engine::framebuffer_size_callback(GLFWwindow* window, int width, int height
 void Engine::window_size_callback(GLFWwindow* window, int width, int height)
 {
 	static_cast<Window*>(glfwGetWindowUserPointer(window))->updateSize(width, height);
-	ImGui::GetIO().DisplaySize.x = width;
-	ImGui::GetIO().DisplaySize.y = height;
+	ImGui::GetIO().DisplaySize.x = (float)width;
+	ImGui::GetIO().DisplaySize.y = (float)height;
 }
 
 Engine::Exception::Exception(int line, const char* file, const char* what) noexcept
@@ -429,11 +363,28 @@ const char* Engine::Exception::getType() const noexcept
 	return "IO Exception";
 }
 
-//float angle = 20.0f * 0;
-//model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-//model = glm::rotate(model, glm::radians(x * 180.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-//model = glm::rotate(model, glm::radians(y * 180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-//model = glm::rotate(model, glm::radians(z * 180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-//model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+//Updating Label name
+		//std::string a = m_sWindowName + " FPS: " + std::to_string((int)round(1 / m_Timer.getDelta()));
+		//glfwSetWindowTitle(m_pWnd->getWnd(), a.c_str());
+
+
+	//int w = 50; int z = 50;
+	//int y = 5;
+	////Prepare scene
+	//for (int i = 0; i < w; i++)
+	//	for (int j = 0; j < z; ++j)
+	//	{
+	//		m_vecEntities.push_back(new Entity(AssetManager::get().getModel("Cube"), AssetManager::get().getTexture("JanSzescian")));
+	//		m_vecEntities.back()->setPos(glm::vec3(((float)i - w / 2.f) - .5f, -.5f, ((float)j - z / 2.f) - .5f));
+	//		//m_pWnd->m_pGfx->addEntity(m_vecEntities.back());
+	//	}
+
+	////Œciany
+	//for (int i = 0; i < w; i++)
+	//	for (int j = 1; j < y + 1; ++j)
+	//	{
+	//		if ((i == 25 || i == 26) && (j == 1 || j == 2)) continue;
+	//		m_vecEntities.push_back(new Entity(AssetManager::get().getModel("Cube"), AssetManager::get().getTexture("JanSzescian")));
+	//		m_vecEntities.back()->setPos(glm::vec3((float)i - w / 2.f - .5f, (float)j - .5f, 24.f - .5f));
+	//		//m_pWnd->m_pGfx->addEntity(m_vecEntities.back());
+	//	}

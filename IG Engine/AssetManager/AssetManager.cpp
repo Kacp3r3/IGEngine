@@ -7,6 +7,7 @@ void AssetManager::loadTextures()
 	load("Resources/Pictures/zl.jpg", "JanSzescian", false);
 	load("Resources/Pictures/cursor.png", "Cursor", true);
 	load("Resources/Mesh/Stall/stallTexture.png","Stall", true);
+	load("Resources/Pictures/grass.jpg", "Grass", false);
 	std::vector<std::string> files =
 	{
 		"Resources/Skybox/right.jpg",
@@ -35,11 +36,16 @@ void AssetManager::loadModels()
 {
 	auto load = [this](std::string&& path, std::string&& name, MeshType m = MeshType::MESH) { m_mapModels[name] = new Model(Mesh(path,m)); };
 
+	load("Resources/Mesh/SkyBox.mesh", "SkyBox");
 	load("Resources/Mesh/Cube.mesh", "Cube");
 	load("Resources/Mesh/Plane.mesh", "Plane");
-	load("Resources/Mesh/SkyBox.mesh", "SkyBox");
 	load("Resources/Mesh/Stall/stall.obj", "Stall", MeshType::OBJ);
 	load("Resources/Mesh/Dragon/dragon.obj", "Dragon", MeshType::OBJ);
+}
+
+void AssetManager::loadModel(Model* m, std::string name)
+{
+	m_mapModels[name] = m;
 }
 
 Texture* AssetManager::getTexture(std::string&& name)

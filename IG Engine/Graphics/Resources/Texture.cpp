@@ -1,5 +1,4 @@
 #include "Texture.h"
-#include <stdexcept>
 
 
 
@@ -28,6 +27,8 @@ Texture::Texture(const std::string & path, bool transparent)
 		else glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 		glGenerateMipmap(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, -0.4f);
 	}
 	else
 	{
@@ -36,6 +37,7 @@ Texture::Texture(const std::string & path, bool transparent)
 	m_nWidth = (GLuint)width;
 	m_nHeight = (GLuint)height;
 	stbi_image_free(data);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 Texture::Texture(const std::vector<std::string>& vec, bool png)
@@ -73,5 +75,6 @@ Texture::Texture(const std::vector<std::string>& vec, bool png)
 	m_nID = textureID;
 	m_nWidth = width;
 	m_nHeight = height;
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	//return textureID;
 }
