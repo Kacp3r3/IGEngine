@@ -270,4 +270,8 @@
   <ItemGroup>
     <Text Include="Resources\HINT.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <Object Include="Resources\Mesh\Dragon\dragon.obj" />
+    <Object Include="Resources\Mesh\Stall\stall.obj" />
+  </ItemGroup>
 </Project>
