@@ -18,7 +18,7 @@ void ImguiManager::initImGui(GLFWwindow* wnd)
 	ImGui::CreateContext();
 	ImGui::StyleColorsDark();
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
-	const char* glsl_version = "#version 440";
+	const char* glsl_version = "#version 440 core";
 	ImGui_ImplGlfw_InitForOpenGL(wnd, true);
 	ImGui_ImplOpenGL3_Init(glsl_version);
 }

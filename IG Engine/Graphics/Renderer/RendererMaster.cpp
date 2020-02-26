@@ -1,10 +1,10 @@
 #include "RendererMaster.h"
 #include "Engine/Engine.h"
 
-glm::vec3 RendererMaster::specular = { 0.4f,0.4f,0.4f };
-glm::vec3 RendererMaster::ambient = { 0.f,0.f,0.f };
-glm::vec3 RendererMaster::diffuse = { 0.f,0.f,0.f };
-float RendererMaster::shininees=0.f;
+glm::vec3 RendererMaster::ambient = { 0.4f,0.4f,0.4f };
+glm::vec3 RendererMaster::specular = { 0.7f,0.7f,0.7f };
+glm::vec3 RendererMaster::diffuse = { 0.3f,0.3f,0.3f };
+float RendererMaster::shininees=1.f;
 
 RendererMaster::RendererMaster()
 	:
@@ -87,7 +87,7 @@ void RendererMaster::updateProjection()
 void RendererMaster::resetProjection()
 {
 	m_fNear = 0.1f;
-	m_fFar = 600.f;
+	m_fFar = 2500.f;
 	m_fFov = 75.f;
 	m_matProjection = glm::perspective(glm::radians(m_fFov), Engine::SCR_WIDTH / static_cast<float>(Engine::SCR_HEIGHT), m_fNear, m_fFar);
 }

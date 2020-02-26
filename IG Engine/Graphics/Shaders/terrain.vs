@@ -16,7 +16,7 @@ void main()
 {
 	vec4 worldPos = transformationMatrix * vec4(aPos,1.0f);
 	gl_Position = projectionMatrix * viewMatrix * worldPos;
-	texCoord = 10*aTexCoord;
+	texCoord = 40*aTexCoord;
 	Normal = (transformationMatrix * vec4(aNormals,0.0)).xyz;
 	toLightVec = lightPosition - worldPos.xyz;
 	toCameraVector = (inverse(viewMatrix) * vec4(0.0,0.0,0.0,1.0)).xyz - worldPos.xyz;

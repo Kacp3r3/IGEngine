@@ -4,8 +4,8 @@
 #include <glad/glad.h>
 
 
-#include "Graphics/Resources/Mesh.h"
-#include "Graphics/Resources/Texture.h"
+#include "Graphics/Basics/Mesh.h"
+#include "Graphics/Basics/Texture.h"
 
 
 class Model

@@ -7,7 +7,7 @@ Engine::Engine()
 	:
 	 m_Timer()
 	,m_Imgui()
-	,m_Camera({0.f,1.50f,-3.f})
+	,m_Camera({400.f,5.50f,410.f})
 	,m_bInputEnabled(true)
 	,m_Sun({ -169.f,177.f,-245.f }, {1.f,1.f,1.f})
 {
@@ -56,6 +56,7 @@ Engine::Engine()
 	AssetManager::get();
 	AssetManager::get().loadTextures();
 	AssetManager::get().loadModels();
+	AssetManager::get().loadPictures();
 
 	//================================================================
 	//= Render init
@@ -66,10 +67,10 @@ Engine::Engine()
 	//Input options
 	//glfwSetInputMode(x, GLFW_STICKY_KEYS | GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
 
-	tr.push_back(new Terrain(0, 0, AssetManager::get().getTexture("Grass")));
-	tr.push_back(new Terrain(1, 0, AssetManager::get().getTexture("Grass")));
-	tr.push_back(new Terrain(0, 1, AssetManager::get().getTexture("Grass")));
-	tr.push_back(new Terrain(1, 1, AssetManager::get().getTexture("Grass")));
+	tr.push_back(new Terrain(0, 0, AssetManager::get().getTexture("Grass"),  AssetManager::get().getPicture("terrain")));
+	//tr.push_back(new Terrain(-1, 0, AssetManager::get().getTexture("Grass"), AssetManager::get().getPicture("terrain")));
+	//tr.push_back(new Terrain(0, -1, AssetManager::get().getTexture("Grass"), AssetManager::get().getPicture("terrain")));
+	//tr.push_back(new Terrain(-1, -1, AssetManager::get().getTexture("Grass"),AssetManager::get().getPicture("terrain")));
 	for(auto ter : tr)
 		m_pWnd->m_pGfx->addTerrain(ter);
 	SkyBox = new Entity(AssetManager::get().getModel("SkyBox"), AssetManager::get().getTexture("SkyBox"));
@@ -77,11 +78,11 @@ Engine::Engine()
 
 	stall = new Entity(AssetManager::get().getModel("Dragon"), AssetManager::get().getTexture("JanSzescian"));
 	stall->setScale(2.5f);
-	stall->setPos({ 0.f,0.f,0.f });
+	stall->setPos({ 400.f,0.f,400.f });
 	m_pWnd->m_pGfx->addEntity(stall);
 	stall2 = new Entity(AssetManager::get().getModel("Stall"), AssetManager::get().getTexture("Stall"));
 	stall2->setScale(1.f);
-	stall2->setPos({ 0.f,0.f,-20.f });
+	stall2->setPos({ 420.f,0.f,420.f });
 	m_pWnd->m_pGfx->addEntity(stall2);
 }
 
@@ -315,7 +316,7 @@ void Engine::composeFrame()
 
 void Engine::updateModels(float dt)
 {
-	m_Sun.setPos({ sin(glfwGetTime()) * 60.f,35.f,cos(glfwGetTime()) * 60.f });
+	m_Sun.setPos({ sin(glfwGetTime()) * 160.f + 400.f,185.f,cos(glfwGetTime()) * 160.f + 400.f });
 }
 
 void Engine::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

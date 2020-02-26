@@ -48,6 +48,14 @@ void AssetManager::loadModel(Model* m, std::string name)
 	m_mapModels[name] = m;
 }
 
+void AssetManager::loadPictures()
+{
+	auto load = [this](std::string&& path, std::string&& name) { m_mapPictures[name] = new Picture(path); };
+
+	load("Resources/Pictures/heightmap.jpg", "terrain");
+	load("Resources/Pictures/hm.png", "terrain2");
+}
+
 Texture* AssetManager::getTexture(std::string&& name)
 {
 	if (m_mapTextures.find(name) != m_mapTextures.end())
@@ -60,6 +68,11 @@ Model* AssetManager::getModel(std::string&& name)
 	if (m_mapModels.find(name) != m_mapModels.end())
 		return m_mapModels[name];
 	else throw IGEXCEPTIONIO(std::string("Proba uzycia nie istniejacej siatki: " + name).c_str());
+}
+
+Picture* AssetManager::getPicture(std::string&& name)
+{
+	return m_mapPictures[name];
 }
 
 AssetManager::~AssetManager()

@@ -136,10 +136,10 @@
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Graphics\Camera\Camera.cpp" />
     <ClCompile Include="Graphics\Renderer\RendererMaster.cpp" />
-    <ClCompile Include="Graphics\Resources\Material.cpp" />
+    <ClCompile Include="Graphics\Basics\Material.cpp" />
     <ClCompile Include="Graphics\Shaders\Shader.cpp" />
     <ClCompile Include="Graphics\TextGenerator.cpp" />
-    <ClCompile Include="Graphics\Resources\Texture.cpp" />
+    <ClCompile Include="Graphics\Basics\Texture.cpp" />
     <ClCompile Include="Graphics\Renderer\HUDRenderer.cpp" />
     <ClCompile Include="ImGui\ImGuiManager\ImguiManager.cpp" />
     <ClCompile Include="ImGui\imgui.cpp" />
@@ -150,9 +150,10 @@
     <ClCompile Include="ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Graphics\Light\Light.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Graphics\Resources\Model.cpp" />
-    <ClCompile Include="Graphics\Resources\Mesh.cpp" />
+    <ClCompile Include="Graphics\Basics\Model.cpp" />
+    <ClCompile Include="Graphics\Basics\Mesh.cpp" />
     <ClCompile Include="Graphics\Renderer\TerrainRenderer.cpp" />
+    <ClCompile Include="Graphics\Basics\Picture.cpp" />
     <ClCompile Include="World\Structures\Terrain.cpp" />
     <ClCompile Include="Utility\IGException.cpp" />
     <ClCompile Include="Utility\Monitor.cpp" />
@@ -168,10 +169,10 @@
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Graphics\Camera\Camera.h" />
     <ClInclude Include="Graphics\Renderer\RendererMaster.h" />
-    <ClInclude Include="Graphics\Resources\Material.h" />
+    <ClInclude Include="Graphics\Basics\Material.h" />
     <ClInclude Include="Graphics\Shaders\Shader.h" />
     <ClInclude Include="Graphics\TextGenerator.h" />
-    <ClInclude Include="Graphics\Resources\Texture.h" />
+    <ClInclude Include="Graphics\Basics\Texture.h" />
     <ClInclude Include="Graphics\Renderer\HUDRenderer.h" />
     <ClInclude Include="ImGui\ImGuiManager\ImguiManager.h" />
     <ClInclude Include="ImGui\imconfig.h" />
@@ -182,10 +183,11 @@
     <ClInclude Include="ImGui\imstb_rectpack.h" />
     <ClInclude Include="ImGui\imstb_textedit.h" />
     <ClInclude Include="ImGui\imstb_truetype.h" />
-    <ClInclude Include="Graphics\Resources\Model.h" />
-    <ClInclude Include="Graphics\Resources\Mesh.h" />
+    <ClInclude Include="Graphics\Basics\Model.h" />
+    <ClInclude Include="Graphics\Basics\Mesh.h" />
     <ClInclude Include="Graphics\Light\Light.h" />
     <ClInclude Include="Graphics\Renderer\TerrainRenderer.h" />
+    <ClInclude Include="Graphics\Basics\Picture.h" />
     <ClInclude Include="World\Structures\Terrain.h" />
     <ClInclude Include="Utility\StringUtil.h" />
     <ClInclude Include="Utility\Enums.h" />
@@ -227,10 +229,6 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\HINT.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="Resources\Mesh\Dragon\dragon.obj" />
-    <Object Include="Resources\Mesh\Stall\stall.obj" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

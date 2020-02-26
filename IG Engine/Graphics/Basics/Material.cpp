@@ -45,20 +45,20 @@ Material::Material(std::string dataPath)
 	}
 	
 	file.close();
-	tmp.ambient = { 0.3,0.3,0.3 };
+	tmp.ambient = { 0.4,0.4,0.4 };
 	tmp.specular = {0.2,0.2,0.2 };
 	tmp.diffuse = { 0.2,0.2,0.2 };
-	tmp.shininess = 0.2f;
+	tmp.shininess = 1.f;
 	_materials.emplace("DefaultLight", tmp);
 	_materialNames.push_back("DefaultLight");
-	tmp.ambient = { 0.,0.,0. };
-	tmp.specular = { 0.,0.,0. };
-	tmp.diffuse = { 0.,0.,0. };
-	tmp.shininess = 0.0f;
-	_materials.emplace("Default", tmp);
-	_materialNames.push_back("Default");
+	//tmp.ambient = { 0.,0.,0. };
+	//tmp.specular = { 0.,0.,0. };
+	//tmp.diffuse = { 0.,0.,0. };
+	//tmp.shininess = 0.0f;
+	//_materials.emplace("Default", tmp);
+	//_materialNames.push_back("Default");
 	_current = _materials.begin();
-	ListMaterials();
+	//ListMaterials();
 }
 
 Material::~Material()

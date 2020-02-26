@@ -1,14 +1,24 @@
 #include "Terrain.h"
 #include "AssetManager/AssetManager.h"
 Model* Terrain::m_Model = nullptr;
-Terrain::Terrain(int x, int y, Texture* txt)
+const float Terrain::m_MaxPixelValue = 256.f+256.f+256.f;
+const float Terrain::m_MaxHeight = 40.f;
+Terrain::Terrain(int x, int z, Texture* txt, Picture* hmp)
 {
-	m_vecPos = { m_nSize*(-x),0.,m_nSize * (-y) };
+	m_Vertices = nullptr;
+	m_Hmp = hmp;
+	m_vecPos = { x*m_nSize,0.,z * m_nSize };
 	m_pTexture = txt;
 	m_matTransformation = glm::mat4(1.f);
 	m_matTransformation = glm::translate(m_matTransformation, m_vecPos);
 	if (m_Model == nullptr) m_Model = generateTerrain();
 	//if (m_Model == nullptr) m_Model = AssetManager::get().getModel("Cube");
+}
+
+float Terrain::getHeight()
+{
+
+	return 0.0f;
 }
 
 Model* Terrain::getModel()
@@ -28,9 +38,10 @@ Texture* Terrain::getTexture()
 
 Model* Terrain::generateTerrain()
 {
-
+	int m_nVertex = m_Hmp->getWidth();
 	int count = m_nVertex * m_nVertex;
-	float* vertices = new float[count * 3];
+	m_Vertices = new float[count * 3];
+	float* vertices = m_Vertices;
 	float* normals = new float[count * 3];
 	float* textureCoords = new float[count * 2];
 	int* indices = new int[6 * (m_nVertex - 1) * (m_nVertex - 1)];
@@ -38,15 +49,30 @@ Model* Terrain::generateTerrain()
 	for (int i = 0; i < m_nVertex; i++) {
 		for (int j = 0; j < m_nVertex; j++) {
 			vertices[vertexPointer * 3] = (float)j / ((float)m_nVertex - 1) * m_nSize;
-			vertices[vertexPointer * 3 + 1] = 0;
+			glm::vec4 pixel = m_Hmp->getPixel(j, i);
+			float height = ((pixel.x + pixel.y + pixel.z) / (m_MaxPixelValue / 2.f) -1.f)*m_MaxHeight;
+			vertices[vertexPointer * 3 + 1] = height;
 			vertices[vertexPointer * 3 + 2] = (float)i / ((float)m_nVertex - 1) * m_nSize;
-			normals[vertexPointer * 3] = 0;
-			normals[vertexPointer * 3 + 1] = 1;
-			normals[vertexPointer * 3 + 2] = 0;
+			
 			textureCoords[vertexPointer * 2] = (float)j / ((float)m_nVertex - 1);
 			textureCoords[vertexPointer * 2 + 1] = (float)i / ((float)m_nVertex - 1);
 			vertexPointer++;
 		}
+	}
+	vertexPointer = 0;
+	for (int i = 0; i < m_nVertex; i++) {
+		for (int j = 0; j < m_nVertex; j++) {
+			glm::vec3 normal;
+			normal.x = getHeight(j - 1, i) - getHeight(j + 1, i);
+			normal.y = 2.f;
+			normal.z = getHeight(j, i - 1) - getHeight(j, i + 1);
+			normal = glm::normalize(normal);
+
+			normals[vertexPointer * 3] = normal.x;
+			normals[vertexPointer * 3 + 1] = normal.y;
+			normals[vertexPointer * 3 + 2] = normal.z;
+			vertexPointer++;
+	}
 	}
 	int pointer = 0;
 	for (int gz = 0; gz < m_nVertex - 1; gz++) {
@@ -65,4 +91,10 @@ Model* Terrain::generateTerrain()
 	}
 	return new Model(Mesh(vertices, normals, count*3,textureCoords,count*2, indices, 6 * (m_nVertex - 1) * (m_nVertex - 1)));
 	
+}
+
+float Terrain::getHeight(int x, int z)
+{
+	if (x < 0 || z < 0 || x >= m_Hmp->getWidth() || z >= m_Hmp->getHeight()) return 0;
+	return m_Vertices[(z*m_Hmp->getWidth()+x)*m_Hmp->getChannels()+1];
 }

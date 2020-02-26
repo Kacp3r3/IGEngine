@@ -9,9 +9,9 @@ uniform mat4 projectionMatrix;
 void main()
 {
 	vec4 scaled = vec4(aPos,1.0);
-	scaled.x *= 500.f;
-	scaled.y *= 500.f;
-	scaled.z *= 500.f;
+	scaled.x *= 1800.f;
+	scaled.y *= 1800.f;
+	scaled.z *= 1800.f;
 	gl_Position = projectionMatrix*viewMatrix * scaled;
 	TexCoords = aPos;
 }

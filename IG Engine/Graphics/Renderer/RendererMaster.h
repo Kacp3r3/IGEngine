@@ -8,7 +8,7 @@
 
 
 #include "Graphics/Shaders/Shader.h"
-#include "Graphics/Resources/Model.h"
+#include "Graphics/Basics/Model.h"
 #include "Graphics/Renderer/EntityRenderer.h"
 #include "Graphics/Renderer/HUDRenderer.h"
 #include "Graphics/Renderer/TerrainRenderer.h"

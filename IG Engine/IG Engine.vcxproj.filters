@@ -66,19 +66,10 @@
     <ClCompile Include="Graphics\Camera\CameraHUD.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Resources\Texture.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Resources\Model.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
     <ClCompile Include="AssetManager\AssetManager.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
     <ClCompile Include="ImGui\ImGuiManager\ImguiManager.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Resources\Mesh.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Entities\Entity.cpp">
@@ -99,10 +90,22 @@
     <ClCompile Include="Graphics\Renderer\TerrainRenderer.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Resources\Material.cpp">
+    <ClCompile Include="World\Structures\Terrain.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="World\Structures\Terrain.cpp">
+    <ClCompile Include="Graphics\Basics\Material.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Basics\Mesh.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Basics\Model.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Basics\Texture.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Basics\Picture.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
@@ -167,19 +170,10 @@
     <ClInclude Include="Graphics\Camera\CameraHUD.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Resources\Texture.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Resources\Model.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
     <ClInclude Include="AssetManager\AssetManager.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="ImGui\ImGuiManager\ImguiManager.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Resources\Mesh.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Entities\Entity.h">
@@ -203,10 +197,22 @@
     <ClInclude Include="Graphics\Renderer\TerrainRenderer.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Resources\Material.h">
+    <ClInclude Include="World\Structures\Terrain.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="World\Structures\Terrain.h">
+    <ClInclude Include="Graphics\Basics\Material.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Basics\Mesh.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Basics\Model.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Basics\Texture.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Basics\Picture.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
@@ -269,9 +275,5 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Resources\HINT.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="Resources\Mesh\Dragon\dragon.obj" />
-    <Object Include="Resources\Mesh\Stall\stall.obj" />
   </ItemGroup>
 </Project>

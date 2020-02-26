@@ -6,8 +6,8 @@
 #include <glm/ext/matrix_transform.hpp>
 
 
-#include "Graphics/Resources/Model.h"
-#include "Graphics/Resources/Material.h"
+#include "Graphics/Basics/Model.h"
+#include "Graphics/Basics/Material.h"
 
 
 class Entity
