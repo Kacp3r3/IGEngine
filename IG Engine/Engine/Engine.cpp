@@ -74,15 +74,15 @@ Engine::Engine()
 	for(auto ter : tr)
 		m_pWnd->m_pGfx->addTerrain(ter);
 	SkyBox = new Entity(AssetManager::get().getModel("SkyBox"), AssetManager::get().getTexture("SkyBox"));
-	m_vecEntities.reserve(2);
+	m_vecEntities.reserve(3);
 
-	stall = new Entity(AssetManager::get().getModel("Dragon"), AssetManager::get().getTexture("JanSzescian"));
-	stall->setScale(2.5f);
-	stall->setPos({ 400.f,0.f,400.f });
-	m_pWnd->m_pGfx->addEntity(stall);
-	stall2 = new Entity(AssetManager::get().getModel("Stall"), AssetManager::get().getTexture("Stall"));
-	stall2->setScale(1.f);
-	stall2->setPos({ 420.f,0.f,420.f });
+	//stall = new Entity(AssetManager::get().getModel("Dragon"), AssetManager::get().getTexture("JanSzescian"));
+	//stall->setScale(2.5f);
+	//stall->setPos({ 400.f,0.f,400.f });
+	//m_pWnd->m_pGfx->addEntity(stall);
+	stall2 = new Entity(AssetManager::get().getModel("Cube"), AssetManager::get().getTexture("JanSzescian"));
+	stall2->setScale(10.f);
+	stall2->setPos(m_Sun.getPos());
 	m_pWnd->m_pGfx->addEntity(stall2);
 }
 
@@ -317,6 +317,12 @@ void Engine::composeFrame()
 void Engine::updateModels(float dt)
 {
 	m_Sun.setPos({ sin(glfwGetTime()) * 160.f + 400.f,185.f,cos(glfwGetTime()) * 160.f + 400.f });
+	stall2->setPos(m_Sun.getPos());
+	if (!m_Camera.getFly())
+	{
+		glm::vec3 x = m_Camera.getPos();
+		m_Camera.setPos({ x.x,tr[0]->getTerrainHeight(x.x,x.z) + 4.f ,x.z });
+	}
 }
 
 void Engine::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

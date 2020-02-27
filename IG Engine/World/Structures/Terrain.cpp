@@ -4,8 +4,9 @@ Model* Terrain::m_Model = nullptr;
 const float Terrain::m_MaxPixelValue = 256.f+256.f+256.f;
 const float Terrain::m_MaxHeight = 40.f;
 Terrain::Terrain(int x, int z, Texture* txt, Picture* hmp)
+	:
+	m_vecHeights()
 {
-	m_Vertices = nullptr;
 	m_Hmp = hmp;
 	m_vecPos = { x*m_nSize,0.,z * m_nSize };
 	m_pTexture = txt;
@@ -36,22 +37,64 @@ Texture* Terrain::getTexture()
 	return m_pTexture;
 }
 
+float Terrain::getTerrainHeight(float worldX, float worldZ)
+{
+	if (worldX < 0.f || worldZ < 0.f) return 0.f;
+	float TerrainX = worldX - m_vecPos.x;
+	float TerrainZ = worldZ - m_vecPos.z;
+
+	if (TerrainX > 800.f || TerrainZ > 800.f)return 0.f;
+
+	float squaresize = m_nSize / (m_nVertices-1.f);
+	int gridX = TerrainX / squaresize;
+	int gridZ = TerrainZ / squaresize;
+
+	if (gridX <0 || gridX > m_nVertices - 1 || gridZ < 0 || gridZ > m_nVertices - 1)
+		return 0.0f;
+
+	float xCoord = TerrainX;
+	while (xCoord > squaresize)
+		xCoord -= squaresize;
+	xCoord /= squaresize;
+	float zCoord = TerrainZ;
+	while (zCoord > squaresize)
+		zCoord -= squaresize;
+	zCoord /= squaresize;
+
+	float answer;
+	if (xCoord <= (1 - zCoord)) {
+		answer = barrycentric({ 0, m_vecHeights[gridZ][gridX] , 0 }, { 1,
+				m_vecHeights[gridZ][gridX + 1], 0 }, { 0,
+					m_vecHeights[gridZ + 1][gridX], 1 }, { xCoord, zCoord });
+	}
+	else {
+		answer = barrycentric({ 1, m_vecHeights[gridZ][gridX + 1], 0 }, { 1,
+				m_vecHeights[gridZ + 1][gridX + 1], 1 }, { 0,
+					m_vecHeights[gridZ + 1][gridX], 1 }, { xCoord, zCoord });
+	}
+
+	return answer;
+}
+
 Model* Terrain::generateTerrain()
 {
 	int m_nVertex = m_Hmp->getWidth();
+	m_nVertices = m_nVertex;
 	int count = m_nVertex * m_nVertex;
-	m_Vertices = new float[count * 3];
-	float* vertices = m_Vertices;
+	//m_Vertices = new float[count * 3];
+	float* vertices = new float[count*3];
 	float* normals = new float[count * 3];
 	float* textureCoords = new float[count * 2];
 	int* indices = new int[6 * (m_nVertex - 1) * (m_nVertex - 1)];
 	int vertexPointer = 0;
 	for (int i = 0; i < m_nVertex; i++) {
+		m_vecHeights.emplace_back();
 		for (int j = 0; j < m_nVertex; j++) {
 			vertices[vertexPointer * 3] = (float)j / ((float)m_nVertex - 1) * m_nSize;
 			glm::vec4 pixel = m_Hmp->getPixel(j, i);
 			float height = ((pixel.x + pixel.y + pixel.z) / (m_MaxPixelValue / 2.f) -1.f)*m_MaxHeight;
 			vertices[vertexPointer * 3 + 1] = height;
+			m_vecHeights[i].push_back(height);
 			vertices[vertexPointer * 3 + 2] = (float)i / ((float)m_nVertex - 1) * m_nSize;
 			
 			textureCoords[vertexPointer * 2] = (float)j / ((float)m_nVertex - 1);
@@ -96,5 +139,14 @@ Model* Terrain::generateTerrain()
 float Terrain::getHeight(int x, int z)
 {
 	if (x < 0 || z < 0 || x >= m_Hmp->getWidth() || z >= m_Hmp->getHeight()) return 0;
-	return m_Vertices[(z*m_Hmp->getWidth()+x)*m_Hmp->getChannels()+1];
+	return m_vecHeights[z][x];
+}
+
+float Terrain::barrycentric(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec2 pos)
+{
+		float det = (p2.z - p3.z) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.z - p3.z);
+		float l1 = ((p2.z - p3.z) * (pos.x - p3.x) + (p3.x - p2.x) * (pos.y - p3.z)) / det;
+		float l2 = ((p3.z - p1.z) * (pos.x - p3.x) + (p1.x - p3.x) * (pos.y - p3.z)) / det;
+		float l3 = 1.0f - l1 - l2;
+		return l1 * p1.y + l2 * p2.y + l3 * p3.y;
 }

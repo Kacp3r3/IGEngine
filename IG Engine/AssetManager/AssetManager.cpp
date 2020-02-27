@@ -39,8 +39,8 @@ void AssetManager::loadModels()
 	load("Resources/Mesh/SkyBox.mesh", "SkyBox");
 	load("Resources/Mesh/Cube.mesh", "Cube");
 	load("Resources/Mesh/Plane.mesh", "Plane");
-	load("Resources/Mesh/Stall/stall.obj", "Stall", MeshType::OBJ);
-	load("Resources/Mesh/Dragon/dragon.obj", "Dragon", MeshType::OBJ);
+	//load("Resources/Mesh/Stall/stall.obj", "Stall", MeshType::OBJ);
+	//load("Resources/Mesh/Dragon/dragon.obj", "Dragon", MeshType::OBJ);
 }
 
 void AssetManager::loadModel(Model* m, std::string name)
@@ -54,6 +54,7 @@ void AssetManager::loadPictures()
 
 	load("Resources/Pictures/heightmap.jpg", "terrain");
 	load("Resources/Pictures/hm.png", "terrain2");
+	load("Resources/Pictures/dom.png", "dom");
 }
 
 Texture* AssetManager::getTexture(std::string&& name)
