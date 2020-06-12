@@ -7,7 +7,7 @@ Engine::Engine()
 	:
 	 m_Timer()
 	,m_Imgui()
-	,m_Camera({400.f,5.50f,410.f})
+	,m_Camera({0.f,5.50f,0.f})
 	,m_bInputEnabled(true)
 	,m_Sun({ -169.f,177.f,-245.f }, {1.f,1.f,1.f})
 {
@@ -67,23 +67,25 @@ Engine::Engine()
 	//Input options
 	//glfwSetInputMode(x, GLFW_STICKY_KEYS | GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
 
-	tr.push_back(new Terrain(0, 0, AssetManager::get().getTexture("Grass"),  AssetManager::get().getPicture("terrain")));
-	//tr.push_back(new Terrain(-1, 0, AssetManager::get().getTexture("Grass"), AssetManager::get().getPicture("terrain")));
-	//tr.push_back(new Terrain(0, -1, AssetManager::get().getTexture("Grass"), AssetManager::get().getPicture("terrain")));
-	//tr.push_back(new Terrain(-1, -1, AssetManager::get().getTexture("Grass"),AssetManager::get().getPicture("terrain")));
-	for(auto ter : tr)
-		m_pWnd->m_pGfx->addTerrain(ter);
-	SkyBox = new Entity(AssetManager::get().getModel("SkyBox"), AssetManager::get().getTexture("SkyBox"));
+	//m_vecTerrains.push_back(new Terrain(0, 0, AssetManager::get().getTexture("Grass"),  AssetManager::get().getPicture("test")));
+	//m_vecTerrains.push_back(new Terrain(1, 0, AssetManager::get().getTexture("Grass"), AssetManager::get().getPicture("terrain")));
+	//m_vecTerrains.push_back(new Terrain(1, 1, AssetManager::get().getTexture("Grass"), AssetManager::get().getPicture("terrain")));
+	//m_vecTerrains.push_back(new Terrain(0, 1, AssetManager::get().getTexture("Grass"),AssetManager::get().getPicture("terrain")));
+	//for(auto ter : m_vecTerrains)
+		//m_pWnd->m_pGfx->addTerrain(ter);
+	//SkyBox = new Entity(AssetManager::get().getModel("SkyBox"), AssetManager::get().getTexture("SkyBox"));
 	m_vecEntities.reserve(3);
 
-	//stall = new Entity(AssetManager::get().getModel("Dragon"), AssetManager::get().getTexture("JanSzescian"));
+	stall = new Entity(AssetManager::get().getModel("Mapka"), AssetManager::get().getTexture("mapka"));
+	//stall2 = new Entity(AssetManager::get().getModel("Cube"), AssetManager::get().getTexture("JanSzescian"));
+	//stall2->setPos({ 20.f,0,20.f });
 	//stall->setScale(2.5f);
-	//stall->setPos({ 400.f,0.f,400.f });
-	//m_pWnd->m_pGfx->addEntity(stall);
-	stall2 = new Entity(AssetManager::get().getModel("Cube"), AssetManager::get().getTexture("JanSzescian"));
-	stall2->setScale(10.f);
-	stall2->setPos(m_Sun.getPos());
-	m_pWnd->m_pGfx->addEntity(stall2);
+	//stall->setPos({ 400.f,checkForHeight({400.f,400.f}),400.f });
+	m_pWnd->m_pGfx->addEntity(stall);
+	//stall2 = new Entity(AssetManager::get().getModel("Cube"), AssetManager::get().getTexture("JanSzescian"));
+	//stall2->setScale(10.f);
+	//stall2->setPos(m_Sun.getPos());
+	//m_pWnd->m_pGfx->addEntity(stall2);
 }
 
 Engine::~Engine()
@@ -91,7 +93,7 @@ Engine::~Engine()
 	for (auto entity : m_vecEntities)
 		delete entity;
 
-	for (auto terrain : tr)
+	for (auto terrain : m_vecTerrains)
 		delete terrain;
 }
 
@@ -142,7 +144,7 @@ int Engine::Go()
 				if (ImGui::SliderFloat("Near", m_pWnd->m_pGfx->ptrNear(), 0.1f, 10.0f)) m_pWnd->m_pGfx->updateProjection();
 				if (ImGui::SliderFloat("Fov", m_pWnd->m_pGfx->ptrFov(), 1.0f, 150.0f)) m_pWnd->m_pGfx->updateProjection();
 				ImGui::Text("Properties");
-				ImGui::SliderFloat("Velocity", m_Camera.ptrVelocity(), 1.0f, 20.0f);
+				ImGui::SliderFloat("Velocity", m_Camera.ptrVelocity(), 1.0f, 60.0f);
 				if (!m_Camera.getFly())
 					if (ImGui::SliderFloat("Height", m_Camera.ptrHeight(), 0.0f, 4.0f)) m_Camera.updatePos();
 				ImGui::SliderFloat("Sensitivity", m_Camera.ptrSensitivity(), 0.05f, 2.0f);
@@ -317,12 +319,25 @@ void Engine::composeFrame()
 void Engine::updateModels(float dt)
 {
 	m_Sun.setPos({ sin(glfwGetTime()) * 160.f + 400.f,185.f,cos(glfwGetTime()) * 160.f + 400.f });
-	stall2->setPos(m_Sun.getPos());
+	//stall2->setPos(m_Sun.getPos());
 	if (!m_Camera.getFly())
 	{
 		glm::vec3 x = m_Camera.getPos();
-		m_Camera.setPos({ x.x,tr[0]->getTerrainHeight(x.x,x.z) + 4.f ,x.z });
+		m_Camera.setPos({ x.x,checkForHeight({x.x,x.z}) + 4.f ,x.z });
 	}
+}
+
+float Engine::checkForHeight(glm::vec2 coords)
+{
+	float height;
+	float tmp = Terrain::m_MaxHeight + 0.1f;
+	for (auto& terrain : m_vecTerrains)
+	{
+		height = terrain->getHeight(coords.x, coords.y);
+		if (height <= tmp && height >= -tmp)
+			return height;
+	}
+	return 0.f;
 }
 
 void Engine::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)

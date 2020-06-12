@@ -1,6 +1,7 @@
 #include "Shader.h"
 Shader::Shader(const char* vertexPath, const char* fragmentPath)
 {
+	m_sName = vertexPath;
 	// 1. retrieve the vertex/fragment source code from filePath
 	std::string vertexCode;
 	std::string fragmentCode;
@@ -93,7 +94,7 @@ void Shader::checkCompileErrors(unsigned int shader, std::string type)
 		if (!success)
 		{
 			glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-			std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+			std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n " << m_sName << "\n -- --------------------------------------------------- -- " << std::endl;
 		}
 	}
 }

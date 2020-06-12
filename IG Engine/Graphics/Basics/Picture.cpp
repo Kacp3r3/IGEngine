@@ -22,9 +22,9 @@ glm::vec4 Picture::getPixel(int x, int z)
 	};
 	auto p = m_Picture.get();
 	if (m_nChannels == 3)
-		return glm::vec4(p[ind(x,z)]+1.f, p[ind(x,z)+1]+1.f, p[ind(x,z)+2]+1.f,0.f);
+		return glm::vec4(p[ind(x,z)], p[ind(x,z)+1], p[ind(x,z)+2],0.f);
 	else if (m_nChannels == 4)
-		return glm::vec4(p[ind(x, z)] + 1.f, p[ind(x, z) + 1] + 1.f, p[ind(x, z) + 2] + 1.f, p[ind(x, z) + 3] + 1.f);
+		return glm::vec4(p[ind(x, z)], p[ind(x, z) + 1], p[ind(x, z) + 2], p[ind(x, z) + 3]);
 	else return glm::vec4(0.f, 0.f, 0.f, 0.f);
 }
 

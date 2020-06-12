@@ -8,10 +8,11 @@ uniform mat4 projectionMatrix;
 
 void main()
 {
-	vec4 scaled = vec4(aPos,1.0);
-	scaled.x *= 1800.f;
-	scaled.y *= 1800.f;
-	scaled.z *= 1800.f;
-	gl_Position = projectionMatrix*viewMatrix * scaled;
+	vec4 translated = vec4(aPos,1.f);
+	translated.x *= 1800.f;
+	translated.y *= 1800.f;
+	translated.z *= 1800.f;
+	translated += vec4(800.f,0.f,800.f,0.f);
+	gl_Position = projectionMatrix*viewMatrix * translated;
 	TexCoords = aPos;
 }

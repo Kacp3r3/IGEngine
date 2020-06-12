@@ -94,6 +94,8 @@ public:
 	}
 
 private:
+	std::string m_sName;
+private:
 	// utility function for checking shader compilation/linking errors.
 	// ------------------------------------------------------------------------
 	void checkCompileErrors(unsigned int shader, std::string type);

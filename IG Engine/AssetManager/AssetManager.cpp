@@ -2,12 +2,12 @@
 
 void AssetManager::loadTextures()
 {
-	auto load = [this](std::string&& path, std::string&& name, bool png) { m_mapTextures[name] = new Texture(path, png); };
+	auto load = [this](std::string&& path, std::string&& name) { m_mapTextures[name] = new Texture(path); };
 
-	load("Resources/Pictures/zl.jpg", "JanSzescian", false);
-	load("Resources/Pictures/cursor.png", "Cursor", true);
-	load("Resources/Mesh/Stall/stallTexture.png","Stall", true);
-	load("Resources/Pictures/grass.jpg", "Grass", false);
+	load("Resources/Pictures/zl.jpg", "JanSzescian");
+	load("Resources/Pictures/cursor.png", "Cursor");
+	load("Resources/Mesh/Stall/stallTexture.png","Stall");
+	load("Resources/Pictures/grass.jpg", "Grass");
 	std::vector<std::string> files =
 	{
 		"Resources/Skybox/right.jpg",
@@ -27,9 +27,9 @@ void AssetManager::loadTextures()
 		"Resources/Skybox/DOOM16front.png",
 		"Resources/Skybox/DOOM16back.png"
 	};
-
-	m_mapTextures["SkyBox"] = new Texture(files,false);
-	m_mapTextures["SkyBoxDoom"] = new Texture(files2,true);
+	load("Resources/Pictures/mapkargba.png", "mapka");
+	m_mapTextures["SkyBox"] = new Texture(files);
+	m_mapTextures["SkyBoxDoom"] = new Texture(files2);
 }
 
 void AssetManager::loadModels()
@@ -39,6 +39,7 @@ void AssetManager::loadModels()
 	load("Resources/Mesh/SkyBox.mesh", "SkyBox");
 	load("Resources/Mesh/Cube.mesh", "Cube");
 	load("Resources/Mesh/Plane.mesh", "Plane");
+	load("Resources/Mesh/mapka2.obj", "Mapka", MeshType::OBJ);
 	//load("Resources/Mesh/Stall/stall.obj", "Stall", MeshType::OBJ);
 	//load("Resources/Mesh/Dragon/dragon.obj", "Dragon", MeshType::OBJ);
 }

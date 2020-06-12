@@ -77,6 +77,7 @@ void Mesh::loadObj(std::fstream& f)
     while (true)
     {
         std::getline(f, line);
+        if (line.size() < 1) line = "1";
         strings.clear();
         StringUtil::split(line, strings);
         if (strings[0] == "v")
@@ -107,7 +108,7 @@ void Mesh::loadObj(std::fstream& f)
         StringUtil::split(line, strings, ' ');
         if (strings[0] == "f")
         {       
-            for (int i = 1; i < 4; ++i)
+            for (int i = 1; i < strings.size(); ++i)
             {
                 faces.clear();
                 StringUtil::split(strings[i], faces, '/');

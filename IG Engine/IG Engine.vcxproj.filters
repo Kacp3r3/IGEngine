@@ -226,8 +226,8 @@
     <None Include="Graphics\Shaders\hud.vs" />
     <None Include="Graphics\Shaders\terrain.vs" />
     <None Include="Graphics\Shaders\terrain.fs" />
-    <None Include="Graphics\Shaders\entity.fs" />
-    <None Include="Graphics\Shaders\entity.vs" />
+    <None Include="Graphics\Shaders\entityf.glsl" />
+    <None Include="Graphics\Shaders\entityv.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Pictures\cursor.png">

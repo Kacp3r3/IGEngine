@@ -202,11 +202,11 @@
     <None Include="Graphics\Shaders\hud.fs" />
     <None Include="Graphics\Shaders\hud.vs" />
     <None Include="Graphics\Shaders\sky.fs" />
-    <None Include="Graphics\Shaders\entity.fs" />
+    <None Include="Graphics\Shaders\entityf.glsl" />
     <None Include="Graphics\Shaders\sky.vs" />
     <None Include="Graphics\Shaders\terrain.fs" />
     <None Include="Graphics\Shaders\terrain.vs" />
-    <None Include="Graphics\Shaders\entity.vs" />
+    <None Include="Graphics\Shaders\entityv.glsl" />
     <None Include="Resources\Cube.mesh" />
     <None Include="Resources\Plane.mesh" />
     <None Include="Resources\SkyBox.mesh" />

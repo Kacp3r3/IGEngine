@@ -1,25 +1,21 @@
 #include "Terrain.h"
 #include "AssetManager/AssetManager.h"
-Model* Terrain::m_Model = nullptr;
-const float Terrain::m_MaxPixelValue = 256.f+256.f+256.f;
-const float Terrain::m_MaxHeight = 40.f;
 Terrain::Terrain(int x, int z, Texture* txt, Picture* hmp)
 	:
-	m_vecHeights()
+	 m_vecHeights()
 {
 	m_Hmp = hmp;
 	m_vecPos = { x*m_nSize,0.,z * m_nSize };
 	m_pTexture = txt;
 	m_matTransformation = glm::mat4(1.f);
 	m_matTransformation = glm::translate(m_matTransformation, m_vecPos);
-	if (m_Model == nullptr) m_Model = generateTerrain();
+	m_Model = generateTerrain();
 	//if (m_Model == nullptr) m_Model = AssetManager::get().getModel("Cube");
 }
 
-float Terrain::getHeight()
+Terrain::~Terrain()
 {
-
-	return 0.0f;
+	delete m_Model;
 }
 
 Model* Terrain::getModel()
@@ -37,20 +33,25 @@ Texture* Terrain::getTexture()
 	return m_pTexture;
 }
 
-float Terrain::getTerrainHeight(float worldX, float worldZ)
+float Terrain::getHeight(glm::vec2 coords)
 {
-	if (worldX < 0.f || worldZ < 0.f) return 0.f;
+	return getHeight(coords.x, coords.y);
+}
+
+float Terrain::getHeight(float worldX, float worldZ)
+{
+	if (worldX < 0.f || worldZ < 0.f) return m_MaxHeight + 1.f;
 	float TerrainX = worldX - m_vecPos.x;
 	float TerrainZ = worldZ - m_vecPos.z;
 
-	if (TerrainX > 800.f || TerrainZ > 800.f)return 0.f;
+	if (TerrainX > 800.f || TerrainZ > 800.f)return m_MaxHeight + 1.f;
 
 	float squaresize = m_nSize / (m_nVertices-1.f);
 	int gridX = TerrainX / squaresize;
 	int gridZ = TerrainZ / squaresize;
 
 	if (gridX <0 || gridX > m_nVertices - 1 || gridZ < 0 || gridZ > m_nVertices - 1)
-		return 0.0f;
+		return m_MaxHeight + 1.f;
 
 	float xCoord = TerrainX;
 	while (xCoord > squaresize)
@@ -62,7 +63,7 @@ float Terrain::getTerrainHeight(float worldX, float worldZ)
 	zCoord /= squaresize;
 
 	float answer;
-	if (xCoord <= (1 - zCoord)) {
+	if (xCoord < (1 - zCoord)) {
 		answer = barrycentric({ 0, m_vecHeights[gridZ][gridX] , 0 }, { 1,
 				m_vecHeights[gridZ][gridX + 1], 0 }, { 0,
 					m_vecHeights[gridZ + 1][gridX], 1 }, { xCoord, zCoord });
@@ -132,8 +133,8 @@ Model* Terrain::generateTerrain()
 			indices[pointer++] = bottomRight;
 		}
 	}
-	return new Model(Mesh(vertices, normals, count*3,textureCoords,count*2, indices, 6 * (m_nVertex - 1) * (m_nVertex - 1)));
-	
+	//return new Model(Mesh(vertices, normals, count*3,textureCoords,count*2, indices, 6 * (m_nVertex - 1) * (m_nVertex - 1)));
+	return nullptr;
 }
 
 float Terrain::getHeight(int x, int z)

@@ -9,7 +9,7 @@ float RendererMaster::shininees=1.f;
 RendererMaster::RendererMaster()
 	:
 	 m_HUDShader("Graphics/Shaders/hud.vs", "Graphics/Shaders/hud.fs")
-	,m_EntityShader("Graphics/Shaders/entity.vs", "Graphics/Shaders/entity.fs")
+	,m_EntityShader("Graphics/Shaders/entityv.glsl", "Graphics/Shaders/entityf.glsl")
 	,m_TerrainShader("Graphics/Shaders/terrain.vs", "Graphics/Shaders/terrain.fs")
 	,m_SkyBoxShader("Graphics/Shaders/sky.vs", "Graphics/Shaders/sky.fs")
 {
