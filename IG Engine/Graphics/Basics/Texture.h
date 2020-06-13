@@ -14,7 +14,7 @@
 class Texture
 {
 public:
-	Texture() {};
+	Texture(const char* path, std::string type);
 	Texture(const std::string& path);
 	Texture(const std::vector<std::string>& vec);
 	Texture(const Texture& txt)
@@ -40,12 +40,15 @@ public:
 	std::string getType() { return m_Type; };
 	std::string getPath() { return m_Path; };
 
-private:
 	std::string m_Type;
+	GLuint m_nID;
 	std::string m_Path;
 
 private:
-	GLuint m_nID;
+	void loadTexture(const char* path);
+
+
+private:
 	GLuint m_nWidth;
 	GLuint m_nHeight;
 };

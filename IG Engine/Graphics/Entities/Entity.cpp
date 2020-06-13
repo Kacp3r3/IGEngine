@@ -10,7 +10,6 @@ Entity::Entity(Model* model, Texture* txt)
 	, m_vecRotation(0.f, 0.f, 0.f)
 	, m_fScale(1.f)
 {
-	if (m_pTexture == nullptr) m_Model->haveTexture(false);
 	updateTransformMatrix();
 }
 
@@ -65,7 +64,6 @@ glm::vec3 Entity::getRotation()
 
 Model* Entity::getModel()
 {
-	m_Model->setTexture(m_pTexture);
 	return m_Model;
 }
 

@@ -17,6 +17,8 @@ in vec3 toLightVec;
 in vec3 toCameraVector;
 
 uniform sampler2D texture_diffuse1;
+uniform sampler2D texture_diffuse2;
+uniform sampler2D texture_specular1;
 uniform vec3 lightColor;
 
 uniform Material material;
@@ -39,9 +41,9 @@ void main(void)
     vec3 specular = lightColor * (spec * material.specular);  
         
     vec3 result = ambient + diffuse + specular;
-    //vec4 texColor = texture(texture_diffuse1, texCoord)* vec4(result,1.0);
+    vec4 texColor = texture(texture_diffuse1, texCoord)* vec4(result,1.0);
     //vec4 texColor = mix(vec4(1.0,0.,0.,1.0),texture(texture_diffuse1, texCoord),0.5);
     //vec4 texColor = mix(vec4(1.0,1.,1.0,1.0),texture(texture_diffuse1,texCoord),0.2)* vec4(result,1.0);
-    vec4 texColor = vec4(1.0,0.0,0.0,1.0);
+    //vec4 texColor = vec4(1.0,0.0,0.0,1.0) * vec4(result,1.0);
     FragColor = texColor;
 }

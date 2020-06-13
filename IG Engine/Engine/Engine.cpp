@@ -8,8 +8,8 @@ Engine::Engine()
 	 m_Timer()
 	,m_Imgui()
 	,m_Camera({0.f,5.50f,0.f})
-	,m_bInputEnabled(true)
-	,m_Sun({ -169.f,177.f,-245.f }, {1.f,1.f,1.f})
+	,m_bInputEnabled(true) 
+	,m_Sun({ 0.f,50.f,0.f }, {1.f,1.f,1.f})
 {
 	//================================================================
 	//= Initialize GLFW and force to use 4.4 OpenGL
@@ -49,7 +49,6 @@ Engine::Engine()
 	glfwSetFramebufferSizeCallback(x, framebuffer_size_callback);
 	glfwSetWindowSizeCallback(x, window_size_callback);
 
-
 	//================================================================
 	//= load Resources
 	//================================================================
@@ -74,9 +73,12 @@ Engine::Engine()
 	//for(auto ter : m_vecTerrains)
 		//m_pWnd->m_pGfx->addTerrain(ter);
 	//SkyBox = new Entity(AssetManager::get().getModel("SkyBox"), AssetManager::get().getTexture("SkyBox"));
-	m_vecEntities.reserve(3);
+	m_vecEntities.reserve(1);
 
-	stall = new Entity(AssetManager::get().getModel("Mapka"), AssetManager::get().getTexture("mapka"));
+	stall = new Entity(AssetManager::get().getModel("bp"), nullptr);
+	stall->setPos({ 0.f,0.f,0.f });
+	//stall->getModel()->addTexture(AssetManager::get().getTexture("mapka"));
+	//stall->setScale(10.f);
 	//stall2 = new Entity(AssetManager::get().getModel("Cube"), AssetManager::get().getTexture("JanSzescian"));
 	//stall2->setPos({ 20.f,0,20.f });
 	//stall->setScale(2.5f);

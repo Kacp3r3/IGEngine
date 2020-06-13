@@ -4,10 +4,10 @@ void AssetManager::loadTextures()
 {
 	auto load = [this](std::string&& path, std::string&& name) { m_mapTextures[name] = new Texture(path); };
 
-	load("Resources/Pictures/zl.jpg", "JanSzescian");
-	load("Resources/Pictures/cursor.png", "Cursor");
-	load("Resources/Mesh/Stall/stallTexture.png","Stall");
-	load("Resources/Pictures/grass.jpg", "Grass");
+	//load("Resources/Pictures/zl.jpg", "JanSzescian");
+	//load("Resources/Pictures/cursor.png", "Cursor");
+	//load("Resources/Mesh/Stall/stallTexture.png","Stall");
+	//load("Resources/Pictures/grass.jpg", "Grass");
 	std::vector<std::string> files =
 	{
 		"Resources/Skybox/right.jpg",
@@ -27,21 +27,23 @@ void AssetManager::loadTextures()
 		"Resources/Skybox/DOOM16front.png",
 		"Resources/Skybox/DOOM16back.png"
 	};
-	load("Resources/Pictures/mapkargba.png", "mapka");
-	m_mapTextures["SkyBox"] = new Texture(files);
-	m_mapTextures["SkyBoxDoom"] = new Texture(files2);
+	//load("Resources/Mesh/texture_diffuse1.png", "mapka");
+	//m_mapTextures["SkyBox"] = new Texture(files);
+	//m_mapTextures["SkyBoxDoom"] = new Texture(files2);
 }
 
 void AssetManager::loadModels()
 {
-	auto load = [this](std::string&& path, std::string&& name, MeshType m = MeshType::MESH) { m_mapModels[name] = new Model(Mesh(path,m)); };
+	auto load = [this](std::string&& path, std::string&& name) { m_mapModels[name] = new Model(path); };
 
-	load("Resources/Mesh/SkyBox.mesh", "SkyBox");
-	load("Resources/Mesh/Cube.mesh", "Cube");
-	load("Resources/Mesh/Plane.mesh", "Plane");
-	load("Resources/Mesh/mapka2.obj", "Mapka", MeshType::OBJ);
-	//load("Resources/Mesh/Stall/stall.obj", "Stall", MeshType::OBJ);
-	//load("Resources/Mesh/Dragon/dragon.obj", "Dragon", MeshType::OBJ);
+	//load("Resources/Mesh/SkyBox.mesh", "SkyBox");
+	//load("Resources/Mesh/Cube.mesh", "Cube");
+	//load("Resources/Mesh/Plane.mesh", "Plane");
+	//load("Resources/Mesh/mapka.obj", "bp");
+	load("Resources/Mesh/backpack/backpack.obj", "bp");
+	//load("Resources/Mesh/Stall/stall.obj", "bp");
+	//load("Resources/Mesh/Dragon/dragon.obj", "bp");
+	//load("Resources/Mesh/Nanosuit/nanosuit.obj", "bp");
 }
 
 void AssetManager::loadModel(Model* m, std::string name)
@@ -53,9 +55,9 @@ void AssetManager::loadPictures()
 {
 	auto load = [this](std::string&& path, std::string&& name) { m_mapPictures[name] = new Picture(path); };
 
-	load("Resources/Pictures/heightmap.jpg", "terrain");
-	load("Resources/Pictures/hm.png", "terrain2");
-	load("Resources/Pictures/dom.png", "dom");
+	//load("Resources/Pictures/heightmap.jpg", "terrain");
+	//load("Resources/Pictures/hm.png", "terrain2");
+	//load("Resources/Pictures/dom.png", "dom");
 }
 
 Texture* AssetManager::getTexture(std::string&& name)

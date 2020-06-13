@@ -12,22 +12,36 @@
 #include "Utility/Enums.h"
 #include "Utility/IGException.h"
 #include "Utility/StringUtil.h"
+#include "Graphics/Basics/Texture.h"
+#include "Graphics/Shaders/Shader.h"
 
+
+
+struct Vertex
+{
+    glm::vec3 position;
+    glm::vec3 normal;
+    glm::vec2 texture;
+};
 
 class Mesh 
 {
 public:
+
+    Mesh(std::vector<Vertex> v, std::vector<GLuint> ind, std::vector<Texture*> t);
     Mesh(std::string& path, MeshType m = MeshType::MESH);
-    Mesh(float pos[], float norm[], int nV, float txt[],int nT, int ind[], int nI);
+public:
+    void draw(Shader& shader);
 
 
 private:
+    void setupMesh();
     void loadMesh(std::fstream& f);
-    void loadObj(std::fstream& f);
+    //void loadObj(std::fstream& f);
 public:
-    std::vector<GLfloat> m_vecPositions;
-    std::vector<GLfloat> m_vecTextureCoords;
-    std::vector<GLfloat> m_vecNormals;
+    GLuint VAO, VBO, EBO;
+    std::vector<Vertex> m_vecVert;
     std::vector<GLuint> m_vecIndices;
+    std::vector<Texture*> m_vecTextures;
 };
 
