@@ -1,14 +1,15 @@
 #include "Entity.h"
 
-Material Entity::m_Material = Material("Resources/material.data");
-
-Entity::Entity(Model* model, Texture* txt)
+Entity::Entity(Model* model)
 	:
 	m_Model(model)
-	, m_pTexture(txt)
 	, m_vecPos(0.f, 0.f, 0.f)
 	, m_vecRotation(0.f, 0.f, 0.f)
 	, m_fScale(1.f)
+	, m_fVelocity(10.f)
+	//, m_fRotationSpeed(120.f)
+	//, m_fCurrentVelocity(0.f)
+	//, m_fCurrentRotationSpeed(0.f)
 {
 	updateTransformMatrix();
 }
@@ -45,6 +46,11 @@ void Entity::setRotation(glm::vec3 rot)
 {
 	m_vecRotation = rot;
 	updateTransformMatrix();
+}
+
+void Entity::setRotationY(float x)
+{
+	m_vecRotation.y = x;
 }
 
 glm::mat4 Entity::getTransformationMatrix()

@@ -8,77 +8,69 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-
 #include "Utility/Enums.h"
 
 
 class Camera
 {
 public:
-	Camera()=delete;
-	Camera(glm::vec3 pos);
+	Camera();
 	~Camera();
 
 public:
-	glm::mat4 getMatrix();
-	void processKeyboard(Movement m, float dt);
-	void processMouse(glm::vec2&& offsets, bool constrain);
-	void updateCameraVectors();
-	void updatePos();
-	void reset();
+	virtual glm::mat4 getMatrix() = 0;
+	virtual void processKeyboard(Movement m, float dt);
+	virtual void processMouse(glm::vec2 offsets, bool constrain);
+	virtual void processScroll(float offsets);
+	virtual void reset();
 
 
+	void updatePos() {};
 public:
-	void doubleSpeed();
-	void normalSpeed();
+	
 
 public:
 	void setPos(const glm::vec3 pos);
-	void setVelocity(float x);
+	virtual void setVelocity(float x) {};
 	void setSensitivity(float x);
 	void setHeight(float x);
 	void setPitch(float x);
 	void setYaw(float x);
 	void setSpeed(float x);
-	void setFly(bool x);
+	virtual void setAround(float x) {};
+	virtual void setFly(bool x) {};
 	
 
 	glm::vec3 getPos() const;
-	glm::vec3 getFront() const;
-	glm::vec3 getUp() const;
 	float getYaw() const;
 	float getPitch() const;
-	float getVelocity()const;
+	virtual float getVelocity()const { return -1.f; };
 	float getSensitivity()const;
-	float getHeight()const;
+	float getHeight() const;
 	float getSpeed() const;
-	bool getFly()const;
+	virtual bool getFly()const { return false; };
 
 	//Imgui shortcut
-	bool* ptrFly();
+	virtual bool* ptrFly() { return nullptr; };
 	float* ptrHeight();
-	float* ptrVelocity();
+	virtual float* ptrVelocity() { return nullptr; };
 	float* ptrSensitivity();
 	float* ptrPitch();
 	float* ptrYaw();
 
 
-private:
-	float m_fFov;
-	float m_fYaw;
-	float m_fPitch;
-	float m_fHeight;
-	float m_fSensitivity;
-	float m_fVelocity;
-	float m_fNear;
-	float m_fFar;
-	float m_fSpeed;
-	bool m_bFly;
-	glm::vec3 m_vecPos;
-	glm::vec3 m_vecPosLast;
-	glm::vec3 m_vecFront;
-	glm::vec3 m_vecUp;
-	glm::vec3 m_vecRight;
-	glm::vec3 m_vecWorldUp;
+protected:
+	float m_fYaw;//Both
+	float m_fPitch;//Both
+	float m_fSensitivity;//Both
+	float m_fSpeed;//Both
+	float m_fHeight;//Both
+	glm::vec3 m_vecPos;//Both
+	glm::vec3 m_vecPosLast;//Both
+
+
+
+
+	
 };
 #endif

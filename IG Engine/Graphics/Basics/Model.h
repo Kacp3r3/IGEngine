@@ -24,6 +24,7 @@ public:
 
 public:
     Model(const std::string& path);
+    Model(Mesh mesh);
     ~Model();
     
 public:

@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 
 
-#include "Graphics/Entities/Entity.h"
+#include "Entities/Entity.h"
 #include "Graphics/Shaders/Shader.h"
 
 

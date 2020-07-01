@@ -10,15 +10,16 @@ RendererMaster::RendererMaster()
 	:
 	 //m_HUDShader("Graphics/Shaders/hud.vs", "Graphics/Shaders/hud.fs")
 	m_EntityShader("Graphics/Shaders/entityv.glsl", "Graphics/Shaders/entityf.glsl")
-	//,m_TerrainShader("Graphics/Shaders/terrain.vs", "Graphics/Shaders/terrain.fs")
+	,m_TerrainShader("Graphics/Shaders/terrain.vs", "Graphics/Shaders/terrain.fs")
 	//,m_SkyBoxShader("Graphics/Shaders/sky.vs", "Graphics/Shaders/sky.fs")
 {
 	m_EntityShader.use();
 	m_EntityShader.setInt("texture1", 0);
+	m_EntityShader.setInt("texture_diffuse1", 0);
 	//m_SkyBoxShader.use();
 	//m_SkyBoxShader.setInt("texture1", 0);
-	//m_TerrainShader.use();
-	//m_TerrainShader.setInt("texture1", 0);
+	m_TerrainShader.use();
+	m_TerrainShader.setInt("texture1", 0);
 	resetProjection();
 
 	glViewport(0, 0, Engine::SCR_WIDTH, Engine::SCR_HEIGHT);
@@ -36,7 +37,7 @@ void RendererMaster::clearScreen(float r, float g, float b)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RendererMaster::renderScene(Light& sun, Camera& cam)
+void RendererMaster::renderScene(Light& sun, Camera* cam)
 {
 	clearScreen(0.f,0.f,1.f);
 	
@@ -55,20 +56,20 @@ void RendererMaster::renderScene(Light& sun, Camera& cam)
 	m_EntityShader.setVec3("lightPosition", sun.getPos());
 	m_EntityShader.setVec3("lightColor", sun.getColor());
 	m_EntityShader.setMat4("projectionMatrix", m_matProjection);
-	m_EntityShader.setMat4("viewMatrix", cam.getMatrix());
-	m_EntityShader.setVec3("material.ambient", Entity::m_Material.getAmbient());
-	m_EntityShader.setVec3("material.diffuse", Entity::m_Material.getDiffuse());
-	m_EntityShader.setVec3("material.specular", Entity::m_Material.getSpecular());
-	m_EntityShader.setFloat("material.shininess", Entity::m_Material.getShininess());
+	m_EntityShader.setMat4("viewMatrix", cam->getMatrix());
+	m_EntityShader.setVec3("material.ambient", RendererMaster::ambient);
+	m_EntityShader.setVec3("material.diffuse", RendererMaster::diffuse);
+	m_EntityShader.setVec3("material.specular", RendererMaster::specular);
+	m_EntityShader.setFloat("material.shininess", RendererMaster::shininees);
 	for (auto entity : m_vecEntities)
 		m_Entity.render(entity,m_EntityShader);
 
 	//m_HUD.render(m_HUDShader);
 
 	//Terrain
-	/*m_TerrainShader.use();
+	m_TerrainShader.use();
 	m_TerrainShader.setMat4("projectionMatrix", m_matProjection);
-	m_TerrainShader.setMat4("viewMatrix", cam.getMatrix());
+	m_TerrainShader.setMat4("viewMatrix", cam->getMatrix());
 	m_TerrainShader.setVec3("lightPosition", sun.getPos());
 	m_TerrainShader.setVec3("lightColor", sun.getColor());
 	m_TerrainShader.setVec3("material.ambient", ambient);
@@ -76,7 +77,7 @@ void RendererMaster::renderScene(Light& sun, Camera& cam)
 	m_TerrainShader.setVec3("material.specular", specular);
 	m_TerrainShader.setFloat("material.shininess", shininees);
 	for (auto terrain : m_vecTerrains)
-		m_Terrain.render(terrain, m_TerrainShader);*/
+		m_Terrain.render(terrain, m_TerrainShader);
 }
 
 void RendererMaster::updateProjection()

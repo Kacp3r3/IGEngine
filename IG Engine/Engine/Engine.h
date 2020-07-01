@@ -6,12 +6,15 @@
 
 #include "AssetManager/AssetManager.h"
 #include "Graphics/Camera/Camera.h"
-#include "Graphics/Entities/Entity.h"
+#include "Entities/Entity.h"
 #include "Graphics/Light/Light.h"
 #include "ImGui/ImGuiManager/ImguiManager.h"
 #include "Utility\Monitor.h"
 #include "Utility\Timer.h"
 #include "Window\Window.h"
+#include "Graphics/Camera/Camera3rd.h"
+#include "Graphics/Camera/CameraFirst.h"
+#include "Entities/Player/Player.h"
 
 
 class Engine
@@ -75,8 +78,13 @@ private:
 	Entity* stall2;
 	std::vector<Terrain*> m_vecTerrains;
 	Light m_Sun;
-	Camera m_Camera;
+	//Camera m_Camera;
+	Camera* m_Camera;
+	CameraFirst m_cf;
+	Camera3rd m_ct;
 	bool m_bInputEnabled;
+
+	Player* m_Player;
 };
 
 

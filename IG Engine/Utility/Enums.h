@@ -41,3 +41,9 @@ enum class MeshType
 	MESH,
 	OBJ
 };
+
+enum class CameraType
+{
+	THIRD,
+	FREE
+};

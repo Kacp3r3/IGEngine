@@ -72,9 +72,6 @@
     <ClCompile Include="ImGui\ImGuiManager\ImguiManager.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Entities\Entity.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\Light\Light.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
@@ -106,6 +103,18 @@
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Basics\Picture.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Camera\Camera3rd.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Camera\CameraFirst.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\Entity.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Entities\Player\Player.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
@@ -176,9 +185,6 @@
     <ClInclude Include="ImGui\ImGuiManager\ImguiManager.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Entities\Entity.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
     <ClInclude Include="Utility\StringUtil.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
@@ -213,6 +219,18 @@
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Basics\Picture.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Camera\Camera3rd.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Camera\CameraFirst.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Entity.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Entities\Player\Player.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>

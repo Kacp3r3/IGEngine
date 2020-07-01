@@ -15,6 +15,7 @@
 #include "Graphics/Light/Light.h"
 #include "Graphics/Camera/Camera.h"
 #include "World/Structures/Terrain.h"
+#include "Graphics/Camera/Camera.h"
 
 
 class RendererMaster
@@ -25,7 +26,7 @@ public:
 
 
 public:
-	void renderScene(Light& sun, Camera& cam);
+	void renderScene(Light& sun, Camera* cam);
 	void updateProjection();
 	void resetProjection();
 	void processScroll(float x);
@@ -58,7 +59,7 @@ public:
 
 private:
 	Shader m_EntityShader;
-	//Shader m_TerrainShader;
+	Shader m_TerrainShader;
 	//Shader m_HUDShader;
 	//Shader m_SkyBoxShader;
 

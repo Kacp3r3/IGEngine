@@ -18,6 +18,11 @@ Model::Model(const std::string& path)
     }
 }
 
+Model::Model(Mesh mesh)
+{
+    m_vecMeshes.push_back(mesh);
+}
+
 Model::~Model()
 {
     //deleteData();

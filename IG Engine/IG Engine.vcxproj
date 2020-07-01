@@ -131,8 +131,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="AssetManager\AssetManager.cpp" />
+    <ClCompile Include="Graphics\Camera\Camera3rd.cpp" />
+    <ClCompile Include="Graphics\Camera\CameraFirst.cpp" />
     <ClCompile Include="Graphics\Renderer\EntityRenderer.cpp" />
-    <ClCompile Include="Graphics\Entities\Entity.cpp" />
+    <ClCompile Include="Entities\Entity.cpp" />
     <ClCompile Include="Graphics\Camera\CameraHUD.cpp" />
     <ClCompile Include="Engine\Engine.cpp" />
     <ClCompile Include="Graphics\Camera\Camera.cpp" />
@@ -155,6 +157,7 @@
     <ClCompile Include="Graphics\Basics\Mesh.cpp" />
     <ClCompile Include="Graphics\Renderer\TerrainRenderer.cpp" />
     <ClCompile Include="Graphics\Basics\Picture.cpp" />
+    <ClCompile Include="Entities\Player\Player.cpp" />
     <ClCompile Include="World\Structures\Terrain.cpp" />
     <ClCompile Include="Utility\IGException.cpp" />
     <ClCompile Include="Utility\Monitor.cpp" />
@@ -164,8 +167,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetManager\AssetManager.h" />
+    <ClInclude Include="Graphics\Camera\Camera3rd.h" />
+    <ClInclude Include="Graphics\Camera\CameraFirst.h" />
     <ClInclude Include="Graphics\Renderer\EntityRenderer.h" />
-    <ClInclude Include="Graphics\Entities\Entity.h" />
+    <ClInclude Include="Entities\Entity.h" />
     <ClInclude Include="Graphics\Camera\CameraHUD.h" />
     <ClInclude Include="Engine\Engine.h" />
     <ClInclude Include="Graphics\Camera\Camera.h" />
@@ -189,6 +194,7 @@
     <ClInclude Include="Graphics\Light\Light.h" />
     <ClInclude Include="Graphics\Renderer\TerrainRenderer.h" />
     <ClInclude Include="Graphics\Basics\Picture.h" />
+    <ClInclude Include="Entities\Player\Player.h" />
     <ClInclude Include="World\Structures\Terrain.h" />
     <ClInclude Include="Utility\StringUtil.h" />
     <ClInclude Include="Utility\Enums.h" />

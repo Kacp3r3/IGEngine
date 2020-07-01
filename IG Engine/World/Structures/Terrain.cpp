@@ -133,8 +133,8 @@ Model* Terrain::generateTerrain()
 			indices[pointer++] = bottomRight;
 		}
 	}
-	//return new Model(Mesh(vertices, normals, count*3,textureCoords,count*2, indices, 6 * (m_nVertex - 1) * (m_nVertex - 1)));
-	return nullptr;
+	return new Model(Mesh(vertices, normals, count,textureCoords,count*2, indices, 6 * (m_nVertex - 1) * (m_nVertex - 1),m_pTexture));
+	//return nullptr;
 }
 
 float Terrain::getHeight(int x, int z)

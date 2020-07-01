@@ -27,7 +27,7 @@ struct Vertex
 class Mesh 
 {
 public:
-
+    Mesh(float pos[], float norm[], int nV, float txt[], int nT, int ind[], int nI, Texture* txtr);
     Mesh(std::vector<Vertex> v, std::vector<GLuint> ind, std::vector<Texture*> t);
     Mesh(std::string& path, MeshType m = MeshType::MESH);
 public:

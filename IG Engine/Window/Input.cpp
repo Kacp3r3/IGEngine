@@ -3,6 +3,10 @@ Input::Input()
 	:
 	 m_umapKeys()
 {}
+bool Input::isPressed(int key)
+{
+	return m_umapKeys[key] == KeyState::PRESSED;
+}
 KeyState Input::getKey(int key)
 {
 	return m_umapKeys[key];

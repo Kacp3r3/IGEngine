@@ -24,6 +24,7 @@ public:
 
 
 public:
+	bool isPressed(int key);
 	KeyState getKey(int key);
 	std::pair<Event, int> getEvent();
 
