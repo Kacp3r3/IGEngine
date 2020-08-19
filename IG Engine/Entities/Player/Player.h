@@ -8,5 +8,6 @@ public:
 
 public:
 	void processKeyboard(Movement m, float dt);
+	void adjustAngle(float angle);
 };
 

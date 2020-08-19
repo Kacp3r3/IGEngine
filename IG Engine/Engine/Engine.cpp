@@ -321,28 +321,27 @@ void Engine::processInput()
 		m_Camera->setSpeed(0.f);
 		if (m_pWnd->kbd.isPressed(GLFW_KEY_W))
 		{
-			m_Player->processKeyboard(Movement::FORWARD, m_Timer.getDelta());
+			if (m_Camera != &m_cf) m_Player->processKeyboard(Movement::FORWARD, m_Timer.getDelta());
 			m_Camera->processKeyboard(Movement::FORWARD, m_Timer.getDelta());
 			m_Camera->processMouse({ 0.f,0.f }, true);
 		}
 
 		if (m_pWnd->kbd.isPressed(GLFW_KEY_S))
 		{
-			m_Player->processKeyboard(Movement::BACKWARD, m_Timer.getDelta());
+			if (m_Camera != &m_cf) m_Player->processKeyboard(Movement::BACKWARD, m_Timer.getDelta());
 			m_Camera->processKeyboard(Movement::BACKWARD, m_Timer.getDelta());
 			m_Camera->processMouse({ 0.f,0.f }, true);
 		}
 
 		if (m_pWnd->kbd.isPressed(GLFW_KEY_A))
 		{
-			m_Player->processKeyboard(Movement::LEFT, m_Timer.getDelta());
+			if(m_Camera!=&m_cf) m_Player->processKeyboard(Movement::LEFT, m_Timer.getDelta());
 			m_Camera->processKeyboard(Movement::LEFT, m_Timer.getDelta());
 			m_Camera->processMouse({ 0.f,0.f }, true);
 		}
-
 		if (m_pWnd->kbd.isPressed(GLFW_KEY_D))
 		{
-			m_Player->processKeyboard(Movement::RIGHT, m_Timer.getDelta());
+			if (m_Camera != &m_cf) m_Player->processKeyboard(Movement::RIGHT, m_Timer.getDelta());
 			m_Camera->processKeyboard(Movement::RIGHT, m_Timer.getDelta());
 			m_Camera->processMouse({ 0.f,0.f }, true);
 		}
@@ -357,13 +356,13 @@ void Engine::composeFrame()
 
 void Engine::updateModels(float dt)
 {
-	m_Sun.setPos({ sin(glfwGetTime()) * 160.f + 400.f,185.f,cos(glfwGetTime()) * 160.f + 400.f });
+	m_Sun.setPos({ sin(glfwGetTime()) * 220.f + 400.f,100.f,cos(glfwGetTime()) * 220.f + 400.f });
 	//stall2->setPos(m_Sun.getPos());
-	//if (!m_Camera->getFly())
-	//{
-		//glm::vec3 x = m_Camera->getPos();
-		//m_Camera->setPos({ x.x,checkForHeight({x.x,x.z}) + 4.f ,x.z });
-	//}
+	if (!m_Camera->getFly())
+	{
+		glm::vec3 x = m_Player->getPos();
+		m_Player->setPos({ x.x,checkForHeight({x.x,x.z})+1.7f,x.z });
+	}
 }
 
 float Engine::checkForHeight(glm::vec2 coords)

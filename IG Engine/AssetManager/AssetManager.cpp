@@ -41,8 +41,8 @@ void AssetManager::loadModels()
 	//load("Resources/Mesh/Plane.mesh", "Plane");
 	//load("Resources/Mesh/mapka.obj", "bp");
 	load("Resources/Mesh/backpack/backpack.obj", "bp");
-	//load("Resources/Mesh/Stall/stall.obj", "bp");
-	//load("Resources/Mesh/Dragon/dragon.obj", "bp");
+	//load("Resources/Mesh/Stall/stall.obj", "stall");
+	//load("Resources/Mesh/Dragon/dragon.obj", "dragon");
 	//load("Resources/Mesh/Nanosuit2/nanosuit.obj", "bp");
 }
 
