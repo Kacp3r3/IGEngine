@@ -11,13 +11,13 @@ RendererMaster::RendererMaster()
 	 //m_HUDShader("Graphics/Shaders/hud.vs", "Graphics/Shaders/hud.fs")
 	m_EntityShader("Graphics/Shaders/entityv.glsl", "Graphics/Shaders/entityf.glsl")
 	,m_TerrainShader("Graphics/Shaders/terrain.vs", "Graphics/Shaders/terrain.fs")
-	//,m_SkyBoxShader("Graphics/Shaders/sky.vs", "Graphics/Shaders/sky.fs")
+	,m_SkyBoxShader("Graphics/Shaders/sky.vs", "Graphics/Shaders/sky.fs")
 {
 	m_EntityShader.use();
 	m_EntityShader.setInt("texture1", 0);
 	m_EntityShader.setInt("texture_diffuse1", 0);
-	//m_SkyBoxShader.use();
-	//m_SkyBoxShader.setInt("texture1", 0);
+	m_SkyBoxShader.use();
+	m_SkyBoxShader.setInt("texture1", 0);
 	m_TerrainShader.use();
 	m_TerrainShader.setInt("texture1", 0);
 	resetProjection();
@@ -41,15 +41,16 @@ void RendererMaster::renderScene(Light& sun, Camera* cam)
 {
 	clearScreen(0.f,0.f,1.f);
 	
-	/*glDepthMask(GL_FALSE);
+	glFrontFace(GL_CW);
+	glDepthMask(GL_FALSE);
 	m_SkyBoxShader.use();
 	m_SkyBoxShader.setMat4("projectionMatrix", m_matProjection);
-	m_SkyBoxShader.setMat4("viewMatrix", cam.getMatrix());
-	AssetManager::get().getModel("SkyBox")->bindVAO();
+	m_SkyBoxShader.setMat4("viewMatrix", cam->getMatrix());
 	glBindTexture(GL_TEXTURE_CUBE_MAP, AssetManager::get().getTexture("SkyBox")->getID());
-	glDrawElements(GL_TRIANGLES, AssetManager::get().getModel("SkyBox")->getIndicesCount(), GL_UNSIGNED_INT, nullptr);
-	glDepthMask(GL_TRUE);*/
-
+	AssetManager::get().getModel("cube")->draw(m_SkyBoxShader);
+	//glDrawElements(GL_TRIANGLES, AssetManager::get().getModel("SkyBox")->getIndicesCount(), GL_UNSIGNED_INT, nullptr);
+	glDepthMask(GL_TRUE);
+	glFrontFace(GL_CCW);
 
 	//Entity Stuff
 	m_EntityShader.use();
@@ -88,7 +89,7 @@ void RendererMaster::updateProjection()
 void RendererMaster::resetProjection()
 {
 	m_fNear = 0.1f;
-	m_fFar = 2500.f;
+	m_fFar = 4500.f;
 	m_fFov = 75.f;
 	m_matProjection = glm::perspective(glm::radians(m_fFov), Engine::SCR_WIDTH / static_cast<float>(Engine::SCR_HEIGHT), m_fNear, m_fFar);
 }

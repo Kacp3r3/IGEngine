@@ -61,7 +61,7 @@ private:
 	Shader m_EntityShader;
 	Shader m_TerrainShader;
 	//Shader m_HUDShader;
-	//Shader m_SkyBoxShader;
+	Shader m_SkyBoxShader;
 
 	
 private:

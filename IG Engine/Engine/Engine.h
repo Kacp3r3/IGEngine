@@ -74,7 +74,7 @@ private:
 	std::unique_ptr<Window> m_pWnd;
 	std::vector<Entity*> m_vecEntities;
 	Entity* SkyBox;
-	Entity* stall;
+	Entity* m_SunBody;
 	Entity* stall2;
 	std::vector<Terrain*> m_vecTerrains;
 	Light m_Sun;

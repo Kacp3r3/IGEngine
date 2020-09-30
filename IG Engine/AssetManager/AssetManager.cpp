@@ -28,8 +28,8 @@ void AssetManager::loadTextures()
 		"Resources/Skybox/DOOM16back.png"
 	};
 	//load("Resources/Mesh/texture_diffuse1.png", "mapka");
-	//m_mapTextures["SkyBox"] = new Texture(files);
-	//m_mapTextures["SkyBoxDoom"] = new Texture(files2);
+	m_mapTextures["SkyBox"] = new Texture(files);
+	m_mapTextures["SkyBoxDoom"] = new Texture(files2);
 }
 
 void AssetManager::loadModels()
@@ -38,8 +38,8 @@ void AssetManager::loadModels()
 
 	//load("Resources/Mesh/SkyBox.mesh", "SkyBox");
 	//load("Resources/Mesh/Cube.mesh", "Cube");
-	//load("Resources/Mesh/Plane.mesh", "Plane");
-	//load("Resources/Mesh/mapka.obj", "bp");
+	//load("Resources/Mesh/pln.obj", "plane");
+	load("Resources/Mesh/cube.obj", "cube");
 	load("Resources/Mesh/backpack/backpack.obj", "bp");
 	//load("Resources/Mesh/Stall/stall.obj", "stall");
 	//load("Resources/Mesh/Dragon/dragon.obj", "dragon");

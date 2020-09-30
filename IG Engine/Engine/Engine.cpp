@@ -18,8 +18,8 @@ Engine::Engine()
 	//= Initialize GLFW and force to use 4.4 OpenGL
 	//================================================================
 	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 	glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
@@ -70,17 +70,19 @@ Engine::Engine()
 	//glfwSetInputMode(x, GLFW_STICKY_KEYS | GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
 
 	m_vecTerrains.push_back(new Terrain(0, 0, AssetManager::get().getTexture("Grass"),  AssetManager::get().getPicture("terrain2")));
-	m_vecTerrains.push_back(new Terrain(1, 0, AssetManager::get().getTexture("Grass"), AssetManager::get().getPicture("terrain2")));
-	m_vecTerrains.push_back(new Terrain(1, 1, AssetManager::get().getTexture("Grass"), AssetManager::get().getPicture("terrain2")));
-	m_vecTerrains.push_back(new Terrain(0, 1, AssetManager::get().getTexture("Grass"),AssetManager::get().getPicture("terrain2")));
+	//m_vecTerrains.push_back(new Terrain(1, 0, AssetManager::get().getTexture("Grass"), AssetManager::get().getPicture("terrain2")));
+	//m_vecTerrains.push_back(new Terrain(1, 1, AssetManager::get().getTexture("Grass"), AssetManager::get().getPicture("terrain2")));
+	//m_vecTerrains.push_back(new Terrain(0, 1, AssetManager::get().getTexture("Grass"),AssetManager::get().getPicture("terrain2")));
 	for(auto ter : m_vecTerrains)
 		m_pWnd->m_pGfx->addTerrain(ter);
-	//SkyBox = new Entity(AssetManager::get().getModel("SkyBox"), AssetManager::get().getTexture("SkyBox"));
-	m_vecEntities.reserve(1);
+	//SkyBox = new Entity(AssetManager::get().getModel("cube"));
+	m_vecEntities.reserve(2);
 
 	m_Player = new Player(AssetManager::get().getModel("bp"));
 	m_Player->setPos({ 0.f,0.f,0.f });
 	m_ct.setEntity(m_Player);
+	m_SunBody = new Entity(AssetManager::get().getModel("cube"));
+	m_SunBody->setScale(13.f);
 	//stall->getModel()->addTexture(AssetManager::get().getTexture("mapka"));
 	//stall->setScale(10.f);
 	//stall2 = new Entity(AssetManager::get().getModel("Cube"), AssetManager::get().getTexture("JanSzescian"));
@@ -88,6 +90,7 @@ Engine::Engine()
 	//stall->setScale(2.5f);
 	//stall->setPos({ 400.f,checkForHeight({400.f,400.f}),400.f });
 	m_pWnd->m_pGfx->addEntity(m_Player);
+	m_pWnd->m_pGfx->addEntity(m_SunBody);
 	//stall2 = new Entity(AssetManager::get().getModel("Cube"), AssetManager::get().getTexture("JanSzescian"));
 	//stall2->setScale(10.f);
 	//stall2->setPos(m_Sun.getPos());
@@ -357,7 +360,7 @@ void Engine::composeFrame()
 void Engine::updateModels(float dt)
 {
 	m_Sun.setPos({ sin(glfwGetTime()) * 220.f + 400.f,100.f,cos(glfwGetTime()) * 220.f + 400.f });
-	//stall2->setPos(m_Sun.getPos());
+	m_SunBody->setPos(m_Sun.getPos());
 	if (!m_Camera->getFly())
 	{
 		glm::vec3 x = m_Player->getPos();

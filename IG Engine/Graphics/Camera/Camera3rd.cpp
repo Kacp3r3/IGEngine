@@ -25,6 +25,8 @@ void Camera3rd::calculateZoom(float offset)
 void Camera3rd::calculatePitch(glm::vec2& offset)
 {
 	m_fPitch += offset.y * m_fSensitivity;
+	if (m_fPitch < 0.f) m_fPitch = 0.f;
+	else if (m_fPitch > 90.f) m_fPitch = 89.9f;
 }
 
 void Camera3rd::calculateAngleAroundPlayer(glm::vec2& offset)

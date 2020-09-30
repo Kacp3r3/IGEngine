@@ -4,7 +4,7 @@
 
 Texture::~Texture()
 {
-	printf("delete texture kappa\n");
+	glDeleteTextures(1, &m_nID);
 }
 
 void Texture::loadTexture(const char* path)
@@ -62,7 +62,6 @@ Texture::Texture(const char* path, std::string type)
 
 Texture::Texture(const std::string & path)
 {
-	printf("Create texture kappa\n");
 	m_Type = "texture_diffuse";
 	loadTexture(path.c_str());
 }
@@ -108,5 +107,4 @@ Texture::Texture(const std::vector<std::string>& vec)
 	m_nWidth = width;
 	m_nHeight = height;
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-	//return textureID;
 }
